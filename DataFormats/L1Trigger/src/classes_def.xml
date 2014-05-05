@@ -47,11 +47,6 @@
   <class name="L1uGtExtBxCollection"/>
   <class name="edm::Wrapper<L1uGtExtBxCollection>"/>
 
-  <class name="L1uGtRecBlk" ClassVersion="10">
-   <version ClassVersion="10" checksum="4178309288"/>
-  </class>
-  <class name="L1uGtRecBxCollection"/>
-  <class name="edm::Wrapper<L1uGtRecBxCollection>"/>
 
 
   <class name="l1extra::L1EmParticle" ClassVersion="10">

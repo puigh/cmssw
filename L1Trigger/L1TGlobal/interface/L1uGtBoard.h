@@ -38,7 +38,6 @@
 #include "DataFormats/L1Trigger/interface/EtSum.h"
 
 // Objects to produce for the output record.
-#include "DataFormats/L1Trigger/interface/L1uGtRecBlk.h"
 #include "DataFormats/L1Trigger/interface/L1uGtAlgBlk.h"
 #include "DataFormats/L1Trigger/interface/L1uGtExtBlk.h"
 
@@ -109,10 +108,6 @@ public:
 
 
      /// Fill the Daq Records
-     void fillGtRecord(std::auto_ptr<L1uGtRecBxCollection>& uGtRecord,
-		      int ver, int algBx, int extBx, int muBx, int calBx, int psInd,
-		      cms_uint64_t trgNr, cms_uint64_t orbNr, int abBx, int lumSec ); 
-
      void fillAlgRecord(int iBxInEvent, 
                         std::auto_ptr<L1uGtAlgBxCollection>& uGtAlgRecord,
 			cms_uint64_t orbNr,
@@ -250,7 +245,6 @@ private:
     std::bitset<L1GlobalTriggerReadoutSetup::NumberPhysTriggers> m_gtlAlgorithmOR;
     std::bitset<L1GlobalTriggerReadoutSetup::NumberPhysTriggers> m_gtlDecisionWord;
     
-    L1uGtRecBlk m_uGtRecBlk;
     L1uGtAlgBlk m_uGtAlgBlk;
     L1uGtExtBlk m_uGtExtBlk;
 

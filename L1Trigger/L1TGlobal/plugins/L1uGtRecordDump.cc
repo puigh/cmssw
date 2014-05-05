@@ -43,7 +43,6 @@
 #include "DataFormats/L1Trigger/interface/Tau.h"
 #include "DataFormats/L1Trigger/interface/Jet.h"
 #include "DataFormats/L1Trigger/interface/EtSum.h"
-#include "DataFormats/L1Trigger/interface/L1uGtRecBlk.h"
 #include "DataFormats/L1Trigger/interface/L1uGtAlgBlk.h"
 #include "DataFormats/L1Trigger/interface/L1uGtExtBlk.h"
 
@@ -67,8 +66,7 @@ namespace l1t {
     EDGetToken muToken;
     EDGetToken tauToken;
     EDGetToken jetToken;
-    EDGetToken etsumToken;
-    EDGetToken uGtRecToken; 
+    EDGetToken etsumToken; 
     EDGetToken uGtAlgToken;
     EDGetToken uGtExtToken;
     
@@ -111,7 +109,6 @@ namespace l1t {
       tauToken    = consumes<BXVector<l1t::Tau>>(iConfig.getParameter<InputTag>("tauInputTag"));
       jetToken    = consumes<BXVector<l1t::Jet>>(iConfig.getParameter<InputTag>("jetInputTag"));
       etsumToken  = consumes<BXVector<l1t::EtSum>>(iConfig.getParameter<InputTag>("etsumInputTag"));
-      uGtRecToken = consumes<std::vector<L1uGtRecBlk>>(iConfig.getParameter<InputTag>("uGtRecInputTag"));
       uGtAlgToken = consumes<BXVector<L1uGtAlgBlk>>(iConfig.getParameter<InputTag>("uGtAlgInputTag"));
       uGtExtToken = consumes<BXVector<L1uGtExtBlk>>(iConfig.getParameter<InputTag>("uGtExtInputTag"));
 
@@ -151,9 +148,6 @@ namespace l1t {
  
   Handle<BXVector<l1t::EtSum>> etsums;
   iEvent.getByToken(etsumToken,etsums); 
-  
-  Handle<std::vector<L1uGtRecBlk>> uGtRec;
-  iEvent.getByToken(uGtRecToken,uGtRec);   
 
   Handle<BXVector<L1uGtAlgBlk>> uGtAlg;
   iEvent.getByToken(uGtAlgToken,uGtAlg);   
@@ -167,11 +161,6 @@ namespace l1t {
        cout << " -----------------------------------------------------  " << endl;
        cout << " *********** Run " << iEvent.id().run()  <<" Event " << iEvent.id().event()  << " **************  " << endl;
        cout << " ----------------------------------------------------- " << endl; 
-
-      // Dump the output record	  
-       for(std::vector<L1uGtRecBlk>::const_iterator recBlk = uGtRec->begin(); recBlk != uGtRec->end(); ++recBlk) {
-           recBlk->print(std::cout);
-       }    
 
     //Loop over BX
        for(int i =m_minBx; i <= m_maxBx; ++i) {

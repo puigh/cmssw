@@ -30,7 +30,6 @@
 #include "DataFormats/L1Trigger/interface/Tau.h"
 #include "DataFormats/L1Trigger/interface/L1uGtAlgBlk.h"
 #include "DataFormats/L1Trigger/interface/L1uGtExtBlk.h"
-#include "DataFormats/L1Trigger/interface/L1uGtRecBlk.h"
 
 
 namespace DataFormats_L1Trigger {
@@ -44,7 +43,6 @@ namespace DataFormats_L1Trigger {
     l1t::TauBxCollection    tauBxColl;
     L1uGtAlgBxCollection    uGtAlgBxColl;
     L1uGtExtBxCollection    uGtExtBxColl;
-    L1uGtRecBxCollection    uGtRecBxColl;    
 
     edm::Wrapper<l1t::L1CandidateBxCollection> w_l1CandidateBxColl;
     edm::Wrapper<l1t::EGammaBxCollection> w_eGammaBxColl;
@@ -54,7 +52,6 @@ namespace DataFormats_L1Trigger {
     edm::Wrapper<l1t::TauBxCollection>    w_tauBxColl;
     edm::Wrapper<L1uGtAlgBxCollection>    w_uGtAlgBxColl;
     edm::Wrapper<L1uGtExtBxCollection>    w_uGtExtBxColl;
-    edm::Wrapper<L1uGtRecBxCollection>    w_uGtRecBxColl;
    
     l1extra::L1EmParticleCollection emColl ;
     l1extra::L1JetParticleCollection jetColl ;
