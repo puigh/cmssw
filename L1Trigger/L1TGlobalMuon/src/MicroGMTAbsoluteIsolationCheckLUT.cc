@@ -1,0 +1,40 @@
+#include "../interface/MicroGMTAbsoluteIsolationCheckLUT.h"
+
+MicroGMTAbsoluteIsolationCheckLUT::MicroGMTAbsoluteIsolationCheckLUT (const edm::ParameterSet& iConfig, const std::string& setName) 
+{
+  getParameters(iConfig, setName.c_str());
+}
+
+MicroGMTAbsoluteIsolationCheckLUT::MicroGMTAbsoluteIsolationCheckLUT (const edm::ParameterSet& iConfig, const char* setName) 
+{
+  getParameters(iConfig, setName);
+}
+
+void MicroGMTAbsoluteIsolationCheckLUT::getParameters (const edm::ParameterSet& iConfig, const char* setName) 
+{
+  edm::ParameterSet config = iConfig.getParameter<edm::ParameterSet>(setName);
+  m_energySumInWidth = config.getParameter<int>("areaSum_in_width");
+  
+  m_totalInWidth = m_energySumInWidth;
+
+  std::string m_fname = config.getParameter<std::string>("filename");
+  if (m_fname != std::string("")) {
+    load(m_fname);
+  } 
+
+  m_inputs.push_back(PT);
+  m_inputs.push_back(ETA);
+}
+
+
+MicroGMTAbsoluteIsolationCheckLUT::~MicroGMTAbsoluteIsolationCheckLUT ()
+{
+
+}
+
+
+int 
+MicroGMTAbsoluteIsolationCheckLUT::lookup(int energySum) const 
+{
+  return lookupPacked(energySum);
+}
