@@ -22,21 +22,35 @@ namespace l1t {
 	  int chargeValid=0,
 	  int iso=0,
 	  int mip=0,
-	  int tag=0 );
+	  int tag=0, 
+    bool debug = false,
+    int isoSum = 0,
+    int dPhi = 0,
+    int dEta = 0,
+    int rank = 0);
     
     ~Muon();		
 
     // set integer values
     void setHwCharge(int charge);
     void setHwChargeValid(int valid);
-    void setHwMip(int mip);
     void setHwTag(int tag);
+    
+    void setHwIsoSum(int isoSum);
+    void setHwDPhiExtra(int dPhi);
+    void setHwDEtaExtra(int dEta);
+    void setHwRank(int rank);
 
     // methods to retrieve integer values
     int hwCharge() const;
     int hwChargeValid() const;
-    int hwMip() const;
     int hwTag() const;
+
+    int hwIsoSum() const;
+    int hwDPhiExtra() const;
+    int hwDEtaExtra() const;  
+    int hwRank() const;  
+    
     
   private:
     
@@ -45,6 +59,13 @@ namespace l1t {
     int hwChargeValid_;
     int hwMip_;
     int hwTag_;
+
+    // additional hardware quantities only available if debug flag is set
+    bool debug_;
+    int hwIsoSum_;
+    int hwDPhiExtra_;
+    int hwDEtaExtra_;
+    int hwRank_;
     
   };
   
