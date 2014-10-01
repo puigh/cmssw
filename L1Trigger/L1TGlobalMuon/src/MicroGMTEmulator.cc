@@ -40,45 +40,42 @@
 //
 // class declaration
 //
+namespace l1t {
+  class MicroGMTEmulator : public edm::EDProducer {
+     public:
+        explicit MicroGMTEmulator(const edm::ParameterSet&);
+        ~MicroGMTEmulator();
 
-class MicroGMTEmulator : public edm::EDProducer {
-   public:
-      explicit MicroGMTEmulator(const edm::ParameterSet&);
-      ~MicroGMTEmulator();
+        static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
 
-      static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
+     private:
+        virtual void beginJob() ;
+        virtual void produce(edm::Event&, const edm::EventSetup&);
+        virtual void endJob() ;
+        
+        virtual void beginRun(edm::Run&, edm::EventSetup const&);
+        virtual void endRun(edm::Run&, edm::EventSetup const&);
+        virtual void beginLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&);
+        virtual void endLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&);
 
-   private:
-      virtual void beginJob() ;
-      virtual void produce(edm::Event&, const edm::EventSetup&);
-      virtual void endJob() ;
-      
-      virtual void beginRun(edm::Run&, edm::EventSetup const&);
-      virtual void endRun(edm::Run&, edm::EventSetup const&);
-      virtual void beginLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&);
-      virtual void endLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&);
+        void rankMuons(OutputCollection& results, InputCollection const& muons) const;
+        void rankMuons(OutputCollection& results, OutputCollection const& muons) const;
+        void sortMuons(OutputCollection&, unsigned, muon_t) const;
+        void calculateRank(InputCollection const& muons, std::vector<unsigned>& ranks, ResultMatrix& resMat) const;
+        void calculateRankSplit(InputCollection const& muons, std::vector<unsigned>& ranks, ResultMatrix& resMat) const;
+        void calculateRank(OutputCollection& muons) const;
+        void matrixToStream(ResultMatrix& mat, std::vector<unsigned>& ranks, bool symmetric, std::stringstream&) const;
+        // ----------member data ---------------------------
+        edm::InputTag m_barrelTfInputTag;
+        edm::InputTag m_overlapTfInputTag;
+        edm::InputTag m_forwardTfInputTag;
+        edm::InputTag m_trigTowerTag;
+        MicroGMTRankPtQualLUT m_rankPtQualityLUT;
+        MicroGMTIsolationUnit m_isolationUnit;
+        MicroGMTCancelOutUnit m_cancelOutUnit;
 
-      void rankMuons(OutputCollection& results, InputCollection const& muons) const;
-      void rankMuons(OutputCollection& results, OutputCollection const& muons) const;
-      void sortMuons(OutputCollection&, unsigned, muon_t) const;
-      void calculateRank(InputCollection const& muons, std::vector<unsigned>& ranks, ResultMatrix& resMat) const;
-      void calculateRankSplit(InputCollection const& muons, std::vector<unsigned>& ranks, ResultMatrix& resMat) const;
-      void calculateRank(OutputCollection& muons) const;
-      void matrixToStream(ResultMatrix& mat, std::vector<unsigned>& ranks, bool symmetric, std::stringstream&) const;
-      // ----------member data ---------------------------
-      // edm::EDGetToken m_barrelTfInputToken;
-      // edm::EDGetToken m_overlapTfInputToken;
-      // edm::EDGetToken m_forwardTfInputToken;
-      edm::InputTag m_barrelTfInputTag;
-      edm::InputTag m_overlapTfInputTag;
-      edm::InputTag m_forwardTfInputTag;
-      edm::InputTag m_trigTowerTag;
-      MicroGMTRankPtQualLUT m_rankPtQualityLUT;
-      MicroGMTIsolationUnit m_isolationUnit;
-      MicroGMTCancelOutUnit m_cancelOutUnit;
-
-};
-
+  };
+}
 //
 // constants, enums and typedefs
 //
@@ -91,7 +88,7 @@ class MicroGMTEmulator : public edm::EDProducer {
 //
 // constructors and destructor
 //
-MicroGMTEmulator::MicroGMTEmulator(const edm::ParameterSet& iConfig) : m_rankPtQualityLUT(iConfig), m_isolationUnit(iConfig), m_cancelOutUnit(iConfig)
+l1t::MicroGMTEmulator::MicroGMTEmulator(const edm::ParameterSet& iConfig) : m_rankPtQualityLUT(iConfig), m_isolationUnit(iConfig), m_cancelOutUnit(iConfig)
 {
   // edm::InputTag barrelTfInputTag = iConfig.getParameter<edm::InputTag>("barrelTFInput");
   // edm::InputTag overlapTfInputTag = iConfig.getParameter<edm::InputTag>("overlapTFInput");
@@ -139,7 +136,7 @@ MicroGMTEmulator::MicroGMTEmulator(const edm::ParameterSet& iConfig) : m_rankPtQ
 }
 
 
-MicroGMTEmulator::~MicroGMTEmulator()
+l1t::MicroGMTEmulator::~MicroGMTEmulator()
 {
  
    // do anything here that needs to be done at desctruction time
@@ -156,7 +153,7 @@ MicroGMTEmulator::~MicroGMTEmulator()
 
 // ------------ method called to produce the data  ------------
 void
-MicroGMTEmulator::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
+l1t::MicroGMTEmulator::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
   using namespace edm;
   std::auto_ptr<GMTMuonCandidateCollection> outMuons (new GMTMuonCandidateCollection());
@@ -221,7 +218,7 @@ MicroGMTEmulator::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 }
 
 void
-MicroGMTEmulator::matrixToStream(ResultMatrix& mat, std::vector<unsigned>& ranks, bool symmetric, std::stringstream& out) const
+l1t::MicroGMTEmulator::matrixToStream(ResultMatrix& mat, std::vector<unsigned>& ranks, bool symmetric, std::stringstream& out) const
 {
   if (mat.size() == 0) return;
   out << "    ";
@@ -255,7 +252,7 @@ MicroGMTEmulator::matrixToStream(ResultMatrix& mat, std::vector<unsigned>& ranks
 }
 
 void
-MicroGMTEmulator::rankMuons(OutputCollection& results, InputCollection const& muons) const
+l1t::MicroGMTEmulator::rankMuons(OutputCollection& results, InputCollection const& muons) const
 {
   if (muons.size() == 0) return;
   std::vector<bool> line(muons.size(), false);
@@ -294,7 +291,7 @@ MicroGMTEmulator::rankMuons(OutputCollection& results, InputCollection const& mu
 }
 
 void 
-MicroGMTEmulator::sortMuons(OutputCollection& muons, unsigned nSurvivors, muon_t type) const {
+l1t::MicroGMTEmulator::sortMuons(OutputCollection& muons, unsigned nSurvivors, muon_t type) const {
   OutputCollection::iterator mu1;
   OutputCollection::iterator mu2;
 
@@ -329,7 +326,7 @@ MicroGMTEmulator::sortMuons(OutputCollection& muons, unsigned nSurvivors, muon_t
 }
 
 void
-MicroGMTEmulator::rankMuons(OutputCollection& results, OutputCollection const& muons) const
+l1t::MicroGMTEmulator::rankMuons(OutputCollection& results, OutputCollection const& muons) const
 {
   if (muons.size() == 0) return;
   std::vector<bool> line(muons.size(), false);
@@ -368,7 +365,7 @@ MicroGMTEmulator::rankMuons(OutputCollection& results, OutputCollection const& m
 }
 
 void 
-MicroGMTEmulator::calculateRank(OutputCollection& muons) const 
+l1t::MicroGMTEmulator::calculateRank(OutputCollection& muons) const 
 {
   OutputCollection::iterator mu1;
   for (mu1 = muons.begin(); mu1 != muons.end(); ++mu1) {
@@ -378,7 +375,7 @@ MicroGMTEmulator::calculateRank(OutputCollection& muons) const
 }
 
 void 
-MicroGMTEmulator::calculateRank(InputCollection const& muons, std::vector<unsigned>& rank, ResultMatrix& resMat) const 
+l1t::MicroGMTEmulator::calculateRank(InputCollection const& muons, std::vector<unsigned>& rank, ResultMatrix& resMat) const 
 {
   for (size_t mu1 = 0; mu1 < muons.size(); ++mu1) {
     int rank1 = m_rankPtQualityLUT.lookup(muons[mu1].ptBits(), muons[mu1].qualityBits());
@@ -396,7 +393,7 @@ MicroGMTEmulator::calculateRank(InputCollection const& muons, std::vector<unsign
 }
 
 void 
-MicroGMTEmulator::calculateRankSplit(InputCollection const& muons, std::vector<unsigned>& rank, ResultMatrix& resMat) const 
+l1t::MicroGMTEmulator::calculateRankSplit(InputCollection const& muons, std::vector<unsigned>& rank, ResultMatrix& resMat) const 
 {
   for (size_t mu1 = 0; mu1 < muons.size()/2; ++mu1) {
     int rank1 = m_rankPtQualityLUT.lookup(muons[mu1].ptBits(), muons[mu1].qualityBits());
@@ -428,42 +425,42 @@ MicroGMTEmulator::calculateRankSplit(InputCollection const& muons, std::vector<u
 }
 // ------------ method called once each job just before starting event loop  ------------
 void 
-MicroGMTEmulator::beginJob()
+l1t::MicroGMTEmulator::beginJob()
 {
 }
 
 // ------------ method called once each job just after ending the event loop  ------------
 void 
-MicroGMTEmulator::endJob() {
+l1t::MicroGMTEmulator::endJob() {
 }
 
 // ------------ method called when starting to processes a run  ------------
 void 
-MicroGMTEmulator::beginRun(edm::Run&, edm::EventSetup const&)
+l1t::MicroGMTEmulator::beginRun(edm::Run&, edm::EventSetup const&)
 {
 }
 
 // ------------ method called when ending the processing of a run  ------------
 void 
-MicroGMTEmulator::endRun(edm::Run&, edm::EventSetup const&)
+l1t::MicroGMTEmulator::endRun(edm::Run&, edm::EventSetup const&)
 {
 }
 
 // ------------ method called when starting to processes a luminosity block  ------------
 void 
-MicroGMTEmulator::beginLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&)
+l1t::MicroGMTEmulator::beginLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&)
 {
 }
 
 // ------------ method called when ending the processing of a luminosity block  ------------
 void 
-MicroGMTEmulator::endLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&)
+l1t::MicroGMTEmulator::endLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&)
 {
 }
 
 // ------------ method fills 'descriptions' with the allowed parameters for the module  ------------
 void
-MicroGMTEmulator::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
+l1t::MicroGMTEmulator::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
   //The following says we do not know what parameters are allowed so do no validation
   // Please change this to state exactly what you do use, even if it is no parameters
   edm::ParameterSetDescription desc;

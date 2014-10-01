@@ -1,14 +1,15 @@
 #include "../interface/MicroGMTExtrapolationLUT.h"
 
-MicroGMTExtrapolationLUT::MicroGMTExtrapolationLUT (const edm::ParameterSet& iConfig, const std::string& setName, const int type) {
+l1t::MicroGMTExtrapolationLUT::MicroGMTExtrapolationLUT (const edm::ParameterSet& iConfig, const std::string& setName, const int type) {
   getParameters(iConfig, setName.c_str(), type);
 }
 
-MicroGMTExtrapolationLUT::MicroGMTExtrapolationLUT (const edm::ParameterSet& iConfig, const char* setName, const int type) {
+l1t::MicroGMTExtrapolationLUT::MicroGMTExtrapolationLUT (const edm::ParameterSet& iConfig, const char* setName, const int type) {
   getParameters(iConfig, setName, type);
 }
 
-void MicroGMTExtrapolationLUT::getParameters (const edm::ParameterSet& iConfig, const char* setName, const int type) {
+void 
+l1t::MicroGMTExtrapolationLUT::getParameters (const edm::ParameterSet& iConfig, const char* setName, const int type) {
   edm::ParameterSet config = iConfig.getParameter<edm::ParameterSet>(setName);
   m_chrgInWidth = config.getParameter<int>("charge_in_width");
 
@@ -33,14 +34,14 @@ void MicroGMTExtrapolationLUT::getParameters (const edm::ParameterSet& iConfig, 
 }
 
 
-MicroGMTExtrapolationLUT::~MicroGMTExtrapolationLUT ()
+l1t::MicroGMTExtrapolationLUT::~MicroGMTExtrapolationLUT ()
 {
 
 }
 
 
 int 
-MicroGMTExtrapolationLUT::lookup(int charge, int angle, int pt) const 
+l1t::MicroGMTExtrapolationLUT::lookup(int charge, int angle, int pt) const 
 {
   // normalize these two to the same scale and then calculate?
   if (m_initialized) {
@@ -54,7 +55,7 @@ MicroGMTExtrapolationLUT::lookup(int charge, int angle, int pt) const
 }
 
 int 
-MicroGMTExtrapolationLUT::hashInput(int charge, int angle, int pt) const
+l1t::MicroGMTExtrapolationLUT::hashInput(int charge, int angle, int pt) const
 {
   int result = 0;
   result += charge;
@@ -64,7 +65,7 @@ MicroGMTExtrapolationLUT::hashInput(int charge, int angle, int pt) const
 }
 
 void 
-MicroGMTExtrapolationLUT::unHashInput(int input, int& charge, int& angle, int& pt) const 
+l1t::MicroGMTExtrapolationLUT::unHashInput(int input, int& charge, int& angle, int& pt) const 
 {
   charge = input & m_chrgMask;
   angle = (input & m_angleMask) >> m_chrgInWidth;

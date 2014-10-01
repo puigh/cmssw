@@ -1,6 +1,6 @@
 #include "../interface/MicroGMTCancelOutUnit.h"
 
-MicroGMTCancelOutUnit::MicroGMTCancelOutUnit (const edm::ParameterSet& iConfig) : 
+l1t::MicroGMTCancelOutUnit::MicroGMTCancelOutUnit (const edm::ParameterSet& iConfig) : 
     m_boPosMatchQualLUT(iConfig, "BOPos"),
     m_boNegMatchQualLUT(iConfig, "BONeg"),
     m_foPosMatchQualLUT(iConfig, "FOPos"),
@@ -24,13 +24,13 @@ MicroGMTCancelOutUnit::MicroGMTCancelOutUnit (const edm::ParameterSet& iConfig) 
 
 }
 
-MicroGMTCancelOutUnit::~MicroGMTCancelOutUnit ()
+l1t::MicroGMTCancelOutUnit::~MicroGMTCancelOutUnit ()
 {
 
 }
 
 void
-MicroGMTCancelOutUnit::setCancelOutBits(OutputCollection& muons) 
+l1t::MicroGMTCancelOutUnit::setCancelOutBits(OutputCollection& muons) 
 {
   int cntr = 0;
   std::vector<OutputCollection::iterator> wedge1;
@@ -54,7 +54,7 @@ MicroGMTCancelOutUnit::setCancelOutBits(OutputCollection& muons)
 }
 
 void 
-MicroGMTCancelOutUnit::getCancelOutBits( std::vector<OutputCollection::iterator> &wedge1, std::vector<OutputCollection::iterator> & wedge2)
+l1t::MicroGMTCancelOutUnit::getCancelOutBits( std::vector<OutputCollection::iterator> &wedge1, std::vector<OutputCollection::iterator> & wedge2)
 {
   int typehash = (*wedge1.begin())->type()+(*wedge2.begin())->type()*5;
   std::cout << typehash << std::endl;

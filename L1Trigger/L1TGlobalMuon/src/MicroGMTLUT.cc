@@ -1,23 +1,9 @@
 
 #include "../interface/MicroGMTLUT.h"
 
-int 
-MicroGMTLUT::hashInput(const std::vector<std::pair<input_t, int> >& inputset) const 
-{
-  std::vector<std::pair<input_t, int> >::const_iterator inputIt;
-  int shift = 0;
-  int result = 0;
-  for (inputIt = inputset.begin(); inputIt != inputset.end(); ++inputIt) {
-    result += inputIt->second << shift;
-    shift += MicroGMTConfiguration::getInputWidth(inputIt->first);
-  }
-  return result;
-}
-
-
 // I/O functions
 void 
-MicroGMTLUT::save(std::ofstream& output) 
+l1t::MicroGMTLUT::save(std::ofstream& output) 
 {
   std::stringstream out;
   headerToStream(out);
@@ -26,7 +12,7 @@ MicroGMTLUT::save(std::ofstream& output)
 }
 
 void
-MicroGMTLUT::load(const std::string& inFileName) {
+l1t::MicroGMTLUT::load(const std::string& inFileName) {
   std::ifstream fstream;
   try {
     fstream.open(inFileName.c_str());
@@ -57,7 +43,7 @@ MicroGMTLUT::load(const std::string& inFileName) {
 }
 
 void 
-MicroGMTLUT::print() 
+l1t::MicroGMTLUT::print() 
 {
   std::stringstream out;
   contentsToStream(out);
@@ -66,7 +52,7 @@ MicroGMTLUT::print()
 
 
 int 
-MicroGMTLUT::lookup(const std::vector<PortType>& inputset) const 
+l1t::MicroGMTLUT::lookup(const std::vector<PortType>& inputset) const 
 {
   // sort to make sure the hash is correct?
   int hashedInput = hashInput(inputset);
@@ -75,7 +61,7 @@ MicroGMTLUT::lookup(const std::vector<PortType>& inputset) const
 
 
 int 
-MicroGMTLUT::lookupPacked(const int input) const 
+l1t::MicroGMTLUT::lookupPacked(const int input) const 
 {
   // sort to make sure the hash is correct?
   if (m_initialized) {
@@ -90,7 +76,7 @@ MicroGMTLUT::lookupPacked(const int input) const
 }
 
 void 
-MicroGMTLUT::lookup(const std::vector<std::vector<PortType> >& inputsets, std::vector<int>&outputs) const 
+l1t::MicroGMTLUT::lookup(const std::vector<std::vector<PortType> >& inputsets, std::vector<int>&outputs) const 
 {
   outputs.clear();
   for (std::vector<std::vector<PortType> >::const_iterator it = inputsets.begin(); it != inputsets.end(); ++it) {
@@ -99,7 +85,7 @@ MicroGMTLUT::lookup(const std::vector<std::vector<PortType> >& inputsets, std::v
 }
 
 void 
-MicroGMTLUT::initialize() 
+l1t::MicroGMTLUT::initialize() 
 {
   for (int in = 0; in < (1 << m_totalInWidth); ++in) {
     int out = lookupPacked(in);
@@ -109,13 +95,10 @@ MicroGMTLUT::initialize()
 }
 
 void 
-MicroGMTLUT::contentsToStream(std::stringstream& stream) 
+l1t::MicroGMTLUT::contentsToStream(std::stringstream& stream) 
 {
-  stream << "CONTENT_";
-  for (std::vector<input_t>::iterator it = m_inputs.begin(); it != m_inputs.end(); ++it) {
-    stream << MicroGMTConfiguration::getInputName(*it);
-    stream << "_";
-  }
+  stream << "CONTENT";
+  
   stream << " : ";
   for (int in = 0; in < (1 << m_totalInWidth); ++in) {
     stream << m_contents[in] << " ";
@@ -124,7 +107,7 @@ MicroGMTLUT::contentsToStream(std::stringstream& stream)
 }
 
 void
-MicroGMTLUT::headerToStream(std::stringstream& stream) const 
+l1t::MicroGMTLUT::headerToStream(std::stringstream& stream) const 
 {
   stream << "NAME      : Name of the LUT";
   stream << "INSTNACES : List (space separated) of instances of this LUT (differing contents but same in/output)" << std::endl;

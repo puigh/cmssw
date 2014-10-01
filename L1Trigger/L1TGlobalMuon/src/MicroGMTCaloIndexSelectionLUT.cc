@@ -1,14 +1,15 @@
 #include "../interface/MicroGMTCaloIndexSelectionLUT.h"
 
-MicroGMTCaloIndexSelectionLUT::MicroGMTCaloIndexSelectionLUT (const edm::ParameterSet& iConfig, const std::string& setName, int type) {
+l1t::MicroGMTCaloIndexSelectionLUT::MicroGMTCaloIndexSelectionLUT (const edm::ParameterSet& iConfig, const std::string& setName, int type) {
   getParameters(iConfig, setName.c_str(), type);
 }
 
-MicroGMTCaloIndexSelectionLUT::MicroGMTCaloIndexSelectionLUT (const edm::ParameterSet& iConfig, const char* setName, int type) {
+l1t::MicroGMTCaloIndexSelectionLUT::MicroGMTCaloIndexSelectionLUT (const edm::ParameterSet& iConfig, const char* setName, int type) {
   getParameters(iConfig, setName, type);
 }
 
-void MicroGMTCaloIndexSelectionLUT::getParameters (const edm::ParameterSet& iConfig, const char* setName, int type) {
+void 
+l1t::MicroGMTCaloIndexSelectionLUT::getParameters (const edm::ParameterSet& iConfig, const char* setName, int type) {
   edm::ParameterSet config = iConfig.getParameter<edm::ParameterSet>(setName);
   if (type == 0) {
     m_angleInWidth = config.getParameter<int>("eta_in_width");
@@ -27,14 +28,14 @@ void MicroGMTCaloIndexSelectionLUT::getParameters (const edm::ParameterSet& iCon
 }
 
 
-MicroGMTCaloIndexSelectionLUT::~MicroGMTCaloIndexSelectionLUT ()
+l1t::MicroGMTCaloIndexSelectionLUT::~MicroGMTCaloIndexSelectionLUT ()
 {
 
 }
 
 
 int 
-MicroGMTCaloIndexSelectionLUT::lookup(int angle) const 
+l1t::MicroGMTCaloIndexSelectionLUT::lookup(int angle) const 
 {
   return lookupPacked(angle);
 }

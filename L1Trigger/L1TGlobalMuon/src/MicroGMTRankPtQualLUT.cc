@@ -1,6 +1,6 @@
 #include "../interface/MicroGMTRankPtQualLUT.h"
 
-MicroGMTRankPtQualLUT::MicroGMTRankPtQualLUT (const edm::ParameterSet& iConfig) {
+l1t::MicroGMTRankPtQualLUT::MicroGMTRankPtQualLUT (const edm::ParameterSet& iConfig) {
   edm::ParameterSet config = iConfig.getParameter<edm::ParameterSet>("SortRankLUTSettings");
   m_ptInWidth = config.getParameter<int>("pT_in_width");
   m_qualInWidth = config.getParameter<int>("qual_in_width");
@@ -17,13 +17,13 @@ MicroGMTRankPtQualLUT::MicroGMTRankPtQualLUT (const edm::ParameterSet& iConfig) 
   } 
 }
 
-MicroGMTRankPtQualLUT::~MicroGMTRankPtQualLUT ()
+l1t::MicroGMTRankPtQualLUT::~MicroGMTRankPtQualLUT ()
 {
 
 }
 
 int 
-MicroGMTRankPtQualLUT::lookup(int pt, int qual) const 
+l1t::MicroGMTRankPtQualLUT::lookup(int pt, int qual) const 
 {
   // normalize these two to the same scale and then calculate?
   if (m_initialized) {
@@ -37,7 +37,7 @@ MicroGMTRankPtQualLUT::lookup(int pt, int qual) const
 }
 
 int 
-MicroGMTRankPtQualLUT::hashInput(int pt, int qual) const
+l1t::MicroGMTRankPtQualLUT::hashInput(int pt, int qual) const
 {
 
   int result = 0;
@@ -47,7 +47,7 @@ MicroGMTRankPtQualLUT::hashInput(int pt, int qual) const
 }
 
 void 
-MicroGMTRankPtQualLUT::unHashInput(int input, int& pt, int& qual) const 
+l1t::MicroGMTRankPtQualLUT::unHashInput(int input, int& pt, int& qual) const 
 {
   pt = input & m_ptMask;
   qual = (input & m_qualMask) >> m_ptInWidth;

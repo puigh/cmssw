@@ -1,6 +1,6 @@
 #include "../interface/MicroGMTIsolationUnit.h"
 
-MicroGMTIsolationUnit::MicroGMTIsolationUnit (const edm::ParameterSet& iConfig) :
+l1t::MicroGMTIsolationUnit::MicroGMTIsolationUnit (const edm::ParameterSet& iConfig) :
   m_BEtaExtrapolation(iConfig, "BEtaExtrapolationLUTSettings", 0), m_BPhiExtrapolation(iConfig, "BPhiExtrapolationLUTSettings", 1), m_OEtaExtrapolation(iConfig, "OEtaExtrapolationLUTSettings", 0),
   m_OPhiExtrapolation(iConfig, "OPhiExtrapolationLUTSettings", 1), m_FEtaExtrapolation(iConfig, "FEtaExtrapolationLUTSettings", 0), m_FPhiExtrapolation(iConfig, "FPhiExtrapolationLUTSettings", 1),
   m_IdxSelMemEta(iConfig, "IdxSelMemEtaLUTSettings", 0), m_IdxSelMemPhi(iConfig, "IdxSelMemPhiLUTSettings", 1), m_RelIsoCheckMem(iConfig, "RelIsoCheckMemLUTSettings"),  
@@ -18,13 +18,13 @@ MicroGMTIsolationUnit::MicroGMTIsolationUnit (const edm::ParameterSet& iConfig) 
   m_phiExtrapolationLUTs[FORWARDTF_NEG] = &m_FPhiExtrapolation;
 }
 
-MicroGMTIsolationUnit::~MicroGMTIsolationUnit ()
+l1t::MicroGMTIsolationUnit::~MicroGMTIsolationUnit ()
 {
 
 }
 
 int 
-MicroGMTIsolationUnit::getCaloIndex(outMuon& mu) const 
+l1t::MicroGMTIsolationUnit::getCaloIndex(outMuon& mu) const 
 {
   int phiIndex = m_IdxSelMemPhi.lookup(mu.extrapolatedPhiBits());  
 
@@ -37,7 +37,7 @@ MicroGMTIsolationUnit::getCaloIndex(outMuon& mu) const
 }
 
 void 
-MicroGMTIsolationUnit::extrapolateMuons(OutputCollection& result, const InputCollection& inputmuons) const {
+l1t::MicroGMTIsolationUnit::extrapolateMuons(OutputCollection& result, const InputCollection& inputmuons) const {
   InputCollection::const_iterator mu;
   for (mu = inputmuons.begin(); mu != inputmuons.end(); ++mu) {
     GMTMuonCandidate internalMu(*mu);
@@ -55,7 +55,7 @@ MicroGMTIsolationUnit::extrapolateMuons(OutputCollection& result, const InputCol
 }
 
 void
-MicroGMTIsolationUnit::calculate5by1Sums(const GMTInputCaloSumCollection& inputs) 
+l1t::MicroGMTIsolationUnit::calculate5by1Sums(const GMTInputCaloSumCollection& inputs) 
 {
   m_5by1TowerSums.clear();
   if (inputs.size() == 0) return;
@@ -80,7 +80,7 @@ MicroGMTIsolationUnit::calculate5by1Sums(const GMTInputCaloSumCollection& inputs
 
 
 int 
-MicroGMTIsolationUnit::calculate5by5Sum(unsigned index) const
+l1t::MicroGMTIsolationUnit::calculate5by5Sum(unsigned index) const
 {
   if (index > m_5by1TowerSums.size()) {
       std::cout << "warning, energysum out of bounds!" << std::endl;
@@ -101,7 +101,7 @@ MicroGMTIsolationUnit::calculate5by5Sum(unsigned index) const
 }
 
 void 
-MicroGMTIsolationUnit::isolate(OutputCollection& muons) const
+l1t::MicroGMTIsolationUnit::isolate(OutputCollection& muons) const
 {
   OutputCollection::iterator muIt;
   for (muIt = muons.begin(); muIt != muons.end(); ++muIt) {

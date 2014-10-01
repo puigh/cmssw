@@ -1,17 +1,17 @@
 #include "../interface/MicroGMTRelativeIsolationCheckLUT.h"
 
-MicroGMTRelativeIsolationCheckLUT::MicroGMTRelativeIsolationCheckLUT (const edm::ParameterSet& iConfig, const std::string& setName) 
+l1t::MicroGMTRelativeIsolationCheckLUT::MicroGMTRelativeIsolationCheckLUT (const edm::ParameterSet& iConfig, const std::string& setName) 
 {
   getParameters(iConfig, setName.c_str());
 }
 
-MicroGMTRelativeIsolationCheckLUT::MicroGMTRelativeIsolationCheckLUT (const edm::ParameterSet& iConfig, const char* setName) 
+l1t::MicroGMTRelativeIsolationCheckLUT::MicroGMTRelativeIsolationCheckLUT (const edm::ParameterSet& iConfig, const char* setName) 
 {
   getParameters(iConfig, setName);
 }
 
 void 
-MicroGMTRelativeIsolationCheckLUT::getParameters (const edm::ParameterSet& iConfig, const char* setName) 
+l1t::MicroGMTRelativeIsolationCheckLUT::getParameters (const edm::ParameterSet& iConfig, const char* setName) 
 {
   edm::ParameterSet config = iConfig.getParameter<edm::ParameterSet>(setName);
   m_energySumInWidth = config.getParameter<int>("areaSum_in_width");
@@ -30,20 +30,20 @@ MicroGMTRelativeIsolationCheckLUT::getParameters (const edm::ParameterSet& iConf
 }
 
 
-MicroGMTRelativeIsolationCheckLUT::~MicroGMTRelativeIsolationCheckLUT ()
+l1t::MicroGMTRelativeIsolationCheckLUT::~MicroGMTRelativeIsolationCheckLUT ()
 {
 
 }
 
 int 
-MicroGMTRelativeIsolationCheckLUT::lookup(int energySum, int pt) const 
+l1t::MicroGMTRelativeIsolationCheckLUT::lookup(int energySum, int pt) const 
 {
   // normalize these two to the same scale and then calculate?
   return lookupPacked(hashInput(energySum, pt));
 }
 
 int 
-MicroGMTRelativeIsolationCheckLUT::hashInput(int energySum, int pT) const
+l1t::MicroGMTRelativeIsolationCheckLUT::hashInput(int energySum, int pT) const
 {
   int result = 0;
   result += energySum;
@@ -52,7 +52,7 @@ MicroGMTRelativeIsolationCheckLUT::hashInput(int energySum, int pT) const
 }
 
 void 
-MicroGMTRelativeIsolationCheckLUT::unHashInput(int input, int& energySum, int& pt) const 
+l1t::MicroGMTRelativeIsolationCheckLUT::unHashInput(int input, int& energySum, int& pt) const 
 {
   energySum = input & m_energySumMask;
   pt = (input & m_ptMask) >> m_energySumInWidth;

@@ -9,42 +9,41 @@
 
 #include "../interface/MicroGMTConfiguration.h"
 
-class MicroGMTLUT {
-  public:
-    MicroGMTLUT() : m_totalInWidth(0), m_outWidth(0), m_initialized(false) {};
-    virtual ~MicroGMTLUT() {};
+namespace l1t {
+  class MicroGMTLUT {
+    public:
+      MicroGMTLUT() : m_totalInWidth(0), m_outWidth(0), m_initialized(false) {};
+      virtual ~MicroGMTLUT() {};
 
-    // should be implemented in each daughter!
-    // This function is the minimum that should be provided
-    int lookupPacked(int input) const;
+      // should be implemented in each daughter!
+      // This function is the minimum that should be provided
+      int lookupPacked(int input) const;
 
-    // These functions transform their inputs into the hashed input via the
-    // hashInput function and use the lookupPacked function.
-    // Instance -> which content is referred to
-    virtual int lookup(const std::vector<PortType>& inputset) const;
-    virtual void lookup(const std::vector<std::vector<PortType> >& inputsets, std::vector<int>& outputs) const;
-    // hashfunction, which translates the inputs into one integer
-    // simply stitches the input integers together in a bitset
-    int hashInput(const std::vector<PortType>& inputset) const;
+      // These functions transform their inputs into the hashed input via the
+      // hashInput function and use the lookupPacked function.
+      // Instance -> which content is referred to
+      virtual int lookup(const std::vector<PortType>& inputset) const;
+      virtual void lookup(const std::vector<std::vector<PortType> >& inputsets, std::vector<int>& outputs) const;
+      
+      // populates the m_contents map.
+      void initialize();
 
-    // populates the m_contents map.
-    void initialize();
+      // I/O functions
+      void save(std::ofstream& output);
+      void load(const std::string& inFileName);
+      // solely for debugging: prints the LUT to cout
+      void print();
+      void contentsToStream(std::stringstream& stream);
+      void headerToStream(std::stringstream& stream) const;
 
-    // I/O functions
-    void save(std::ofstream& output);
-    void load(const std::string& inFileName);
-    // solely for debugging: prints the LUT to cout
-    void print();
-    void contentsToStream(std::stringstream& stream);
-    void headerToStream(std::stringstream& stream) const;
-
-  protected:
-    size_t m_totalInWidth;
-    size_t m_outWidth;
-    std::vector<input_t> m_inputs;
-    std::map<int, int> m_contents;
-    std::string m_fname;
-    bool m_initialized;
-};
+    protected:
+      size_t m_totalInWidth;
+      size_t m_outWidth;
+      std::vector<input_t> m_inputs;
+      std::map<int, int> m_contents;
+      std::string m_fname;
+      bool m_initialized;
+  };
+}
 
 #endif /* defined(__l1microgmtlut_h) */

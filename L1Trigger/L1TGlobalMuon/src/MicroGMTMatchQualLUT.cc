@@ -1,6 +1,6 @@
 #include "../interface/MicroGMTMatchQualLUT.h"
 
-MicroGMTMatchQualLUT::MicroGMTMatchQualLUT (const edm::ParameterSet& iConfig, std::string prefix) {
+l1t::MicroGMTMatchQualLUT::MicroGMTMatchQualLUT (const edm::ParameterSet& iConfig, std::string prefix) {
   edm::ParameterSet config = iConfig.getParameter<edm::ParameterSet>(prefix+"MatchQualLUTSettings");
   m_dPhiRedInWidth = config.getParameter<int>("deltaPhiRed_in_width");
   m_dEtaRedInWidth = config.getParameter<int>("deltaEtaRed_in_width");
@@ -18,14 +18,14 @@ MicroGMTMatchQualLUT::MicroGMTMatchQualLUT (const edm::ParameterSet& iConfig, st
   } 
 }
 
-MicroGMTMatchQualLUT::~MicroGMTMatchQualLUT ()
+l1t::MicroGMTMatchQualLUT::~MicroGMTMatchQualLUT ()
 {
 
 }
 
 
 int 
-MicroGMTMatchQualLUT::lookup(int dEtaRed, int dPhiRed) const 
+l1t::MicroGMTMatchQualLUT::lookup(int dEtaRed, int dPhiRed) const 
 {
   // normalize these two to the same scale and then calculate?
   if (m_initialized) {
@@ -36,7 +36,7 @@ MicroGMTMatchQualLUT::lookup(int dEtaRed, int dPhiRed) const
 }
 
 int 
-MicroGMTMatchQualLUT::hashInput(int dEtaRed, int dPhiRed) const
+l1t::MicroGMTMatchQualLUT::hashInput(int dEtaRed, int dPhiRed) const
 {
 
   int result = 0;
@@ -46,7 +46,7 @@ MicroGMTMatchQualLUT::hashInput(int dEtaRed, int dPhiRed) const
 }
 
 void 
-MicroGMTMatchQualLUT::unHashInput(int input, int& dEtaRed, int& dPhiRed) const 
+l1t::MicroGMTMatchQualLUT::unHashInput(int input, int& dEtaRed, int& dPhiRed) const 
 {
   dEtaRed = input & m_dEtaRedMask;
   dPhiRed = (input & m_dPhiRedMask) >> m_dEtaRedInWidth;
