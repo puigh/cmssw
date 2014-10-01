@@ -29,8 +29,8 @@
   <class name="l1t::TauBxCollection"/>
   <class name="edm::Wrapper<l1t::TauBxCollection>"/>
 
-  <class name="l1t::Muon" ClassVersion="10">
-   <version ClassVersion="10" checksum="1956355507"/>
+  <class name="l1t::Muon" ClassVersion="11">
+   <version ClassVersion="11" checksum="1109180664"/>
   </class>
   <class name="l1t::MuonBxCollection"/>
   <class name="edm::Wrapper<l1t::MuonBxCollection>"/>
