@@ -25,8 +25,8 @@ l1t::MicroGMTRelativeIsolationCheckLUT::getParameters (const edm::ParameterSet& 
   if (m_fname != std::string("")) {
     load(m_fname);
   } 
-  m_inputs.push_back(PT);
-  m_inputs.push_back(ETA);
+  m_inputs.push_back(MicroGMTConfiguration::PT);
+  m_inputs.push_back(MicroGMTConfiguration::ETA);
 }
 
 

@@ -23,8 +23,8 @@ l1t::MicroGMTAbsoluteIsolationCheckLUT::getParameters (const edm::ParameterSet& 
     load(m_fname);
   } 
 
-  m_inputs.push_back(PT);
-  m_inputs.push_back(ETA);
+  m_inputs.push_back(MicroGMTConfiguration::PT);
+  m_inputs.push_back(MicroGMTConfiguration::ETA);
 }
 
 

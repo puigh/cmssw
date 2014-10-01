@@ -2,6 +2,8 @@
 #define __l1microgmtextrapolationlut_h
 
 #include "MicroGMTLUT.h"
+
+//FIXME move to cc
 #include "MicroGMTConfiguration.h"
 
 namespace l1t {

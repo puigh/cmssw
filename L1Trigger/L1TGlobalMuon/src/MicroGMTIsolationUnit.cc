@@ -1,21 +1,27 @@
 #include "../interface/MicroGMTIsolationUnit.h"
 
+#include "DataFormats/L1TMuon/interface/L1TGMTInputCaloSum.h"
+#include "DataFormats/L1TMuon/interface/L1TGMTInternalMuon.h"
+#include "DataFormats/L1TMuon/interface/L1TRegionalMuonCandidate.h"
+#include "DataFormats/L1Trigger/interface/Muon.h"
+#include "FWCore/MessageLogger/interface/MessageLogger.h"
+
 l1t::MicroGMTIsolationUnit::MicroGMTIsolationUnit (const edm::ParameterSet& iConfig) :
   m_BEtaExtrapolation(iConfig, "BEtaExtrapolationLUTSettings", 0), m_BPhiExtrapolation(iConfig, "BPhiExtrapolationLUTSettings", 1), m_OEtaExtrapolation(iConfig, "OEtaExtrapolationLUTSettings", 0),
   m_OPhiExtrapolation(iConfig, "OPhiExtrapolationLUTSettings", 1), m_FEtaExtrapolation(iConfig, "FEtaExtrapolationLUTSettings", 0), m_FPhiExtrapolation(iConfig, "FPhiExtrapolationLUTSettings", 1),
   m_IdxSelMemEta(iConfig, "IdxSelMemEtaLUTSettings", 0), m_IdxSelMemPhi(iConfig, "IdxSelMemPhiLUTSettings", 1), m_RelIsoCheckMem(iConfig, "RelIsoCheckMemLUTSettings"),  
   m_AbsIsoCheckMem(iConfig, "AbsIsoCheckMemLUTSettings"), m_initialSums(false) 
 {
-  m_etaExtrapolationLUTs[BARRELTF] = &m_BEtaExtrapolation;
-  m_phiExtrapolationLUTs[BARRELTF] = &m_BPhiExtrapolation;
-  m_etaExtrapolationLUTs[OVERLAPTF_POS] = &m_OEtaExtrapolation;
-  m_etaExtrapolationLUTs[OVERLAPTF_NEG] = &m_OEtaExtrapolation;
-  m_phiExtrapolationLUTs[OVERLAPTF_POS] = &m_OPhiExtrapolation;
-  m_phiExtrapolationLUTs[OVERLAPTF_NEG] = &m_OPhiExtrapolation;
-  m_etaExtrapolationLUTs[FORWARDTF_POS] = &m_FEtaExtrapolation;
-  m_etaExtrapolationLUTs[FORWARDTF_NEG] = &m_FEtaExtrapolation;
-  m_phiExtrapolationLUTs[FORWARDTF_POS] = &m_FPhiExtrapolation;
-  m_phiExtrapolationLUTs[FORWARDTF_NEG] = &m_FPhiExtrapolation;
+  m_etaExtrapolationLUTs[MicroGMTConfiguration::muon_t::BARRELTF] = &m_BEtaExtrapolation;
+  m_phiExtrapolationLUTs[MicroGMTConfiguration::muon_t::BARRELTF] = &m_BPhiExtrapolation;
+  m_etaExtrapolationLUTs[MicroGMTConfiguration::muon_t::OVERLAPTF_POS] = &m_OEtaExtrapolation;
+  m_etaExtrapolationLUTs[MicroGMTConfiguration::muon_t::OVERLAPTF_NEG] = &m_OEtaExtrapolation;
+  m_phiExtrapolationLUTs[MicroGMTConfiguration::muon_t::OVERLAPTF_POS] = &m_OPhiExtrapolation;
+  m_phiExtrapolationLUTs[MicroGMTConfiguration::muon_t::OVERLAPTF_NEG] = &m_OPhiExtrapolation;
+  m_etaExtrapolationLUTs[MicroGMTConfiguration::muon_t::FORWARDTF_POS] = &m_FEtaExtrapolation;
+  m_etaExtrapolationLUTs[MicroGMTConfiguration::muon_t::FORWARDTF_NEG] = &m_FEtaExtrapolation;
+  m_phiExtrapolationLUTs[MicroGMTConfiguration::muon_t::FORWARDTF_POS] = &m_FPhiExtrapolation;
+  m_phiExtrapolationLUTs[MicroGMTConfiguration::muon_t::FORWARDTF_NEG] = &m_FPhiExtrapolation;
 }
 
 l1t::MicroGMTIsolationUnit::~MicroGMTIsolationUnit ()
@@ -24,11 +30,11 @@ l1t::MicroGMTIsolationUnit::~MicroGMTIsolationUnit ()
 }
 
 int 
-l1t::MicroGMTIsolationUnit::getCaloIndex(outMuon& mu) const 
+l1t::MicroGMTIsolationUnit::getCaloIndex(MicroGMTConfiguration::InterMuon& mu) const 
 {
-  int phiIndex = m_IdxSelMemPhi.lookup(mu.extrapolatedPhiBits());  
+  int phiIndex = m_IdxSelMemPhi.lookup(mu.hwPhi() + mu.hwDPhi());  
 
-  int eta = mu.extrapolatedEtaBits();
+  int eta = mu.hwEta()+mu.hwDEta();
   //if (eta < 0) eta = ~eta+1; // twos complement
   eta = MicroGMTConfiguration::getTwosComp(eta, 9);
   int etaIndex = m_IdxSelMemEta.lookup(eta);
@@ -37,25 +43,22 @@ l1t::MicroGMTIsolationUnit::getCaloIndex(outMuon& mu) const
 }
 
 void 
-l1t::MicroGMTIsolationUnit::extrapolateMuons(OutputCollection& result, const InputCollection& inputmuons) const {
-  InputCollection::const_iterator mu;
-  for (mu = inputmuons.begin(); mu != inputmuons.end(); ++mu) {
-    GMTMuonCandidate internalMu(*mu);
-    
+l1t::MicroGMTIsolationUnit::extrapolateMuons(MicroGMTConfiguration::InterMuonList& inputmuons) const {
+  MicroGMTConfiguration::InterMuonList::iterator mu;
+  for (mu = inputmuons.begin(); mu != inputmuons.end(); ++mu) {   
     // shift by difference of "normal" width and reduced width
-    int ptRed = internalMu.ptBits() >> 4;
-    int etaAbsRed = std::abs(internalMu.etaBits()) >> 2;
-    int etaAbs = abs(internalMu.etaBits()) >> 1;
+    int ptRed = mu->hwPt() >> 4;
+    int etaAbsRed = std::abs(mu->hwEta()) >> 2;
+    int etaAbs = abs(mu->hwEta()) >> 1;
 
-    int deltaPhi = m_phiExtrapolationLUTs.at((muon_t)internalMu.type())->lookup(internalMu.signBits(), etaAbs, ptRed);
-    int deltaEta = m_etaExtrapolationLUTs.at((muon_t)internalMu.type())->lookup(internalMu.signBits(), etaAbsRed, ptRed);
-    internalMu.setExtrapolation(deltaPhi, deltaEta);
-    result.push_back(internalMu);
+    int deltaPhi = m_phiExtrapolationLUTs.at(mu->type())->lookup(mu->hwSign(), etaAbs, ptRed);
+    int deltaEta = m_etaExtrapolationLUTs.at(mu->type())->lookup(mu->hwSign(), etaAbsRed, ptRed);
+    mu->setExtrapolation(deltaEta, deltaPhi);
   }
 }
 
 void
-l1t::MicroGMTIsolationUnit::calculate5by1Sums(const GMTInputCaloSumCollection& inputs) 
+l1t::MicroGMTIsolationUnit::calculate5by1Sums(const MicroGMTConfiguration::CaloInputCollection& inputs) 
 {
   m_5by1TowerSums.clear();
   if (inputs.size() == 0) return;
@@ -83,7 +86,7 @@ int
 l1t::MicroGMTIsolationUnit::calculate5by5Sum(unsigned index) const
 {
   if (index > m_5by1TowerSums.size()) {
-      std::cout << "warning, energysum out of bounds!" << std::endl;
+      edm::LogWarning("energysum out of bounds!");
     return 0;
   }
   // phi wrap around:
@@ -94,24 +97,24 @@ l1t::MicroGMTIsolationUnit::calculate5by5Sum(unsigned index) const
     if ((unsigned)currIndex < m_5by1TowerSums.size()) {
       returnSum += m_5by1TowerSums[currIndex];
     } else {
-      std::cout << "warning, energysum out of bounds!" << std::endl;
+      edm::LogWarning("energysum out of bounds!");
     }
   } 
   return returnSum;
 }
 
 void 
-l1t::MicroGMTIsolationUnit::isolate(OutputCollection& muons) const
+l1t::MicroGMTIsolationUnit::isolate(MicroGMTConfiguration::InterMuonList& muons) const
 {
-  OutputCollection::iterator muIt;
+  MicroGMTConfiguration::InterMuonList::iterator muIt;
   for (muIt = muons.begin(); muIt != muons.end(); ++muIt) {
     int caloIndex = getCaloIndex(*muIt);
     int energySum = calculate5by5Sum(caloIndex);
-    muIt->setIsolationSumBits(energySum);
+    muIt->setHwIsoSum(energySum);
 
     int absIso = m_AbsIsoCheckMem.lookup(energySum);
-    int relIso = m_RelIsoCheckMem.lookup(energySum, muIt->ptBits());
-    muIt->setRelIsolationBits(relIso);
-    muIt->setAbsIsolationBits(absIso);
+    int relIso = m_RelIsoCheckMem.lookup(energySum, muIt->hwPt());
+    muIt->setHwRelIso(relIso);
+    muIt->setHwAbsIso(absIso);
   }
 }

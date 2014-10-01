@@ -1,5 +1,7 @@
 
 #include "../interface/MicroGMTLUT.h"
+#include "FWCore/Utilities/interface/Exception.h"
+#include "FWCore/MessageLogger/interface/MessageLogger.h"
 
 // I/O functions
 void 
@@ -14,13 +16,9 @@ l1t::MicroGMTLUT::save(std::ofstream& output)
 void
 l1t::MicroGMTLUT::load(const std::string& inFileName) {
   std::ifstream fstream;
-  try {
-    fstream.open(inFileName.c_str());
-    if (!fstream.good()) throw -1;
-  } catch (int i) {
-    // cms::MessageLogger(std::string("Failed to open file")+m_fname);
-    return;
-  }
+  fstream.open(inFileName.c_str());
+  if (!fstream.good()) throw cms::Exception("FileOpenError") << "Failed to open LUT file";
+  
 
   std::string lineID = "";
   
@@ -32,8 +30,7 @@ l1t::MicroGMTLUT::load(const std::string& inFileName) {
   }
 
   if (fstream.eof()) {
-    std::cout << "end of file before contents!" << std::endl;
-    return;
+    throw cms::Exception("FileOpenError") << "Failed to open LUT file";
   }
 
   for (int cntr = 0; cntr < (1 << m_totalInWidth); ++cntr) {
@@ -42,46 +39,15 @@ l1t::MicroGMTLUT::load(const std::string& inFileName) {
   m_initialized = true;
 }
 
-void 
-l1t::MicroGMTLUT::print() 
-{
-  std::stringstream out;
-  contentsToStream(out);
-  std::cout << out.str() << std::endl;
-}
-
-
-int 
-l1t::MicroGMTLUT::lookup(const std::vector<PortType>& inputset) const 
-{
-  // sort to make sure the hash is correct?
-  int hashedInput = hashInput(inputset);
-  return lookupPacked(hashedInput);
-}
-
-
 int 
 l1t::MicroGMTLUT::lookupPacked(const int input) const 
 {
   // sort to make sure the hash is correct?
   if (m_initialized) {
-    if ((unsigned)input > m_contents.size()) {
-      std::cout << input << std::endl;
-    }
-
     return m_contents.at(input);
   }
-  std::cout << "Error, trying to lookup without initialization!" << std::endl;
+  edm::LogError("Tried lookup without initialization!");
   return 0;
-}
-
-void 
-l1t::MicroGMTLUT::lookup(const std::vector<std::vector<PortType> >& inputsets, std::vector<int>&outputs) const 
-{
-  outputs.clear();
-  for (std::vector<std::vector<PortType> >::const_iterator it = inputsets.begin(); it != inputsets.end(); ++it) {
-    outputs.push_back(lookup(*it));
-  }
 }
 
 void 

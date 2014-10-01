@@ -29,8 +29,8 @@ l1t::MicroGMTExtrapolationLUT::getParameters (const edm::ParameterSet& iConfig, 
   if (m_fname != std::string("")) {
     load(m_fname);
   } 
-  m_inputs.push_back(PT);
-  m_inputs.push_back(ETA);
+  m_inputs.push_back(MicroGMTConfiguration::PT);
+  m_inputs.push_back(MicroGMTConfiguration::ETA);
 }
 
 
@@ -45,7 +45,6 @@ l1t::MicroGMTExtrapolationLUT::lookup(int charge, int angle, int pt) const
 {
   // normalize these two to the same scale and then calculate?
   if (m_initialized) {
-    //std::cout << "looking up: " << charge << " " << angle << " " << pt << std::endl;
     unsigned myAngle = MicroGMTConfiguration::getTwosComp(angle, m_angleInWidth);
     return lookupPacked(hashInput(charge, myAngle, pt));
   }

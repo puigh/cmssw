@@ -1,7 +1,7 @@
 <use name="FWCore/Framework"/>
 <use name="FWCore/PluginManager"/>
 <use name="FWCore/ParameterSet"/>
-<use name="UserCode/L1MicroGlobalMuonTriggerDataFormats"/>
+<use name="DataFormats/L1Trigger"/>
 <flags EDM_PLUGIN="1"/>
 <export>
    <lib name="MicroGMTEmulator"/>

@@ -10,8 +10,8 @@ l1t::MicroGMTMatchQualLUT::MicroGMTMatchQualLUT (const edm::ParameterSet& iConfi
   m_dEtaRedMask = (1 << m_dEtaRedInWidth) - 1;
   m_dPhiRedMask = (1 << (m_totalInWidth - 1)) - m_dEtaRedMask - 1;
   
-  m_inputs.push_back(DELTA_ETA_RED);
-  m_inputs.push_back(DELTA_PHI_RED);
+  m_inputs.push_back(MicroGMTConfiguration::DELTA_ETA_RED);
+  m_inputs.push_back(MicroGMTConfiguration::DELTA_PHI_RED);
   std::string m_fname = config.getParameter<std::string>("filename");
   if (m_fname != std::string("")) {
     load(m_fname);

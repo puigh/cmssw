@@ -415,7 +415,6 @@ const bool l1t::MuCondition::checkObjectParameter(const int iCondition, const l1
       << "\n\t hwCharge = " << cand.charge()
       << "\n\t hwQual = " << cand.hwQual()
       << "\n\t hwIso  = " << cand.hwIso()
-      << "\n\t hwMip  = " << cand.hwMip()
       << std::endl;
 
 
@@ -489,10 +488,10 @@ const bool l1t::MuCondition::checkObjectParameter(const int iCondition, const l1
 
     // check mip
     if (objPar.enableMip) {
-        if (!cand.hwMip()) {
-	  LogDebug("l1t|Global") << "\t\t Muon Failed enableMip" << std::endl;
-            return false;
-        }
+   //      if (!cand.hwMip()) {
+	  // LogDebug("l1t|Global") << "\t\t Muon Failed enableMip" << std::endl;
+   //          return false;
+   //      }
     }
 
     // particle matches if we get here

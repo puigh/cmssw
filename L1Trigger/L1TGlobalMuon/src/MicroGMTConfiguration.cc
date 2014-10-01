@@ -1,6 +1,5 @@
 #include "../interface/MicroGMTConfiguration.h"
 
-
 unsigned 
 l1t::MicroGMTConfiguration::getTwosComp(const int signed_int, const int width) {
   if (signed_int >= 0) {

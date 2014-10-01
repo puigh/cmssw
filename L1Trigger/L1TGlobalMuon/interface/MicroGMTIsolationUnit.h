@@ -1,15 +1,11 @@
 #ifndef __l1microgmtisolationunit_h
 #define __l1microgmtisolationunit_h
 
-#include "UserCode/L1MicroGlobalMuonTriggerDataFormats/interface/GMTInputCaloSum.h"
-#include "UserCode/L1MicroGlobalMuonTriggerDataFormats/interface/GMTInputMuon.h"
-#include "UserCode/L1MicroGlobalMuonTriggerDataFormats/interface/GMTMuonCandidate.h"
-
 #include "MicroGMTConfiguration.h"
 #include "MicroGMTExtrapolationLUT.h"
-#include "MicroGMTCaloIndexSelectionLUT.h"
 #include "MicroGMTRelativeIsolationCheckLUT.h"
 #include "MicroGMTAbsoluteIsolationCheckLUT.h"
+#include "MicroGMTCaloIndexSelectionLUT.h"
 
 namespace l1t {
   class MicroGMTIsolationUnit {
@@ -18,13 +14,13 @@ namespace l1t {
       virtual ~MicroGMTIsolationUnit ();
 
       // returns the index corresponding to the calo tower sum 
-      int getCaloIndex(outMuon&) const;
+      int getCaloIndex(MicroGMTConfiguration::InterMuon&) const;
 
-      void calculate5by1Sums(const GMTInputCaloSumCollection&);
+      void calculate5by1Sums(const MicroGMTConfiguration::CaloInputCollection&);
       int calculate5by5Sum(unsigned index) const;
 
-      void isolate(OutputCollection&) const;
-      void extrapolateMuons(OutputCollection&, const InputCollection&) const;
+      void isolate(MicroGMTConfiguration::InterMuonList&) const;
+      void extrapolateMuons(MicroGMTConfiguration::InterMuonList&) const;
 
     private:
       MicroGMTExtrapolationLUT m_BEtaExtrapolation;
@@ -34,8 +30,8 @@ namespace l1t {
       MicroGMTExtrapolationLUT m_FEtaExtrapolation;
       MicroGMTExtrapolationLUT m_FPhiExtrapolation;
 
-      std::map<muon_t, MicroGMTExtrapolationLUT*> m_phiExtrapolationLUTs;
-      std::map<muon_t, MicroGMTExtrapolationLUT*> m_etaExtrapolationLUTs;
+      std::map<MicroGMTConfiguration::muon_t, MicroGMTExtrapolationLUT*> m_phiExtrapolationLUTs;
+      std::map<MicroGMTConfiguration::muon_t, MicroGMTExtrapolationLUT*> m_etaExtrapolationLUTs;
 
       MicroGMTCaloIndexSelectionLUT m_IdxSelMemEta;
       MicroGMTCaloIndexSelectionLUT m_IdxSelMemPhi;

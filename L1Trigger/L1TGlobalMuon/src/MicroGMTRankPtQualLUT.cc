@@ -10,7 +10,7 @@ l1t::MicroGMTRankPtQualLUT::MicroGMTRankPtQualLUT (const edm::ParameterSet& iCon
   m_ptMask = (1 << m_ptInWidth) - 1;
   m_qualMask = (1 << (m_totalInWidth - 1)) - m_ptMask - 1;
   
-  m_inputs.push_back(PT);
+  m_inputs.push_back(MicroGMTConfiguration::PT);
   std::string m_fname = config.getParameter<std::string>("filename");
   if (m_fname != std::string("")) {
     load(m_fname);

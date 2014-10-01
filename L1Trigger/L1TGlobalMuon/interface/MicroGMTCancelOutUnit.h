@@ -10,8 +10,8 @@ namespace l1t {
       explicit MicroGMTCancelOutUnit (const edm::ParameterSet&);
       virtual ~MicroGMTCancelOutUnit ();
       
-      void setCancelOutBits(OutputCollection&);
-      void getCancelOutBits( std::vector<OutputCollection::iterator> &, std::vector<OutputCollection::iterator> &);
+      void setCancelOutBits(MicroGMTConfiguration::InterMuonList&);
+      void getCancelOutBits( std::vector<MicroGMTConfiguration::InterMuonList::iterator> &, std::vector<MicroGMTConfiguration::InterMuonList::iterator> &);
     private:
       MicroGMTMatchQualLUT m_boPosMatchQualLUT;
       MicroGMTMatchQualLUT m_boNegMatchQualLUT;

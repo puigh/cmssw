@@ -19,27 +19,20 @@ namespace l1t {
       // This function is the minimum that should be provided
       int lookupPacked(int input) const;
 
-      // These functions transform their inputs into the hashed input via the
-      // hashInput function and use the lookupPacked function.
-      // Instance -> which content is referred to
-      virtual int lookup(const std::vector<PortType>& inputset) const;
-      virtual void lookup(const std::vector<std::vector<PortType> >& inputsets, std::vector<int>& outputs) const;
-      
       // populates the m_contents map.
       void initialize();
 
       // I/O functions
       void save(std::ofstream& output);
       void load(const std::string& inFileName);
-      // solely for debugging: prints the LUT to cout
-      void print();
+      // content to file
       void contentsToStream(std::stringstream& stream);
       void headerToStream(std::stringstream& stream) const;
 
     protected:
       size_t m_totalInWidth;
       size_t m_outWidth;
-      std::vector<input_t> m_inputs;
+      std::vector<MicroGMTConfiguration::input_t> m_inputs;
       std::map<int, int> m_contents;
       std::string m_fname;
       bool m_initialized;
