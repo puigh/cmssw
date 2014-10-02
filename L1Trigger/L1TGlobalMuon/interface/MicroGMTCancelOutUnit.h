@@ -9,10 +9,12 @@ namespace l1t {
     public: 
       explicit MicroGMTCancelOutUnit (const edm::ParameterSet&);
       virtual ~MicroGMTCancelOutUnit ();
-      
+      // Cancel-Out is set to 1 for the lower quality muon, if a match is found according to match LUTs
       void setCancelOutBits(MicroGMTConfiguration::InterMuonList&);
-      void getCancelOutBits( std::vector<MicroGMTConfiguration::InterMuonList::iterator> &, std::vector<MicroGMTConfiguration::InterMuonList::iterator> &);
     private:
+      // This goes through two neighboring sections and checks for matches
+      void getCancelOutBits( std::vector<MicroGMTConfiguration::InterMuonList::iterator> &, std::vector<MicroGMTConfiguration::InterMuonList::iterator> &);
+
       MicroGMTMatchQualLUT m_boPosMatchQualLUT;
       MicroGMTMatchQualLUT m_boNegMatchQualLUT;
       MicroGMTMatchQualLUT m_foPosMatchQualLUT;
