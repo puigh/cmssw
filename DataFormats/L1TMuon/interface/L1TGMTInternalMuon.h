@@ -7,14 +7,14 @@ namespace l1t {
 class L1TGMTInternalMuon : public L1TRegionalMuonCandidate {
   public:
     L1TGMTInternalMuon() : 
-      L1TRegionalMuonCandidate(), type_(MicroGMTConfiguration::muon_t::ALL), hwRank_(-1), hwCancelBit_(-1), hwWins_(0), hwIsoSum_(0), hwDeltaEta_(0), hwDeltaPhi_(0), hwAbsIso_(-1), hwRelIso_(-1)
+      L1TRegionalMuonCandidate(), type_(MicroGMTConfiguration::muon_t::UNSET), hwRank_(-1), hwCancelBit_(-1), hwWins_(0), hwIsoSum_(0), hwDeltaEta_(0), hwDeltaPhi_(0), hwAbsIso_(-1), hwRelIso_(-1)
       {};
 
     L1TGMTInternalMuon(int pt, int phi, int eta, int sign, int signvalid, int quality, int rank, int cancelbit) : 
       L1TRegionalMuonCandidate(pt, phi, eta, sign, signvalid, quality), hwRank_(rank), hwCancelBit_(cancelbit), hwIsoSum_(0), hwDeltaEta_(0), hwDeltaPhi_(0), hwAbsIso_(-1), hwRelIso_(-1)
       {};
 
-    L1TGMTInternalMuon(const L1TRegionalMuonCandidate& other) : L1TRegionalMuonCandidate(other), type_(MicroGMTConfiguration::muon_t::ALL), hwRank_(-1), hwCancelBit_(-1), hwIsoSum_(0), hwDeltaEta_(0), hwDeltaPhi_(0), hwAbsIso_(-1), hwRelIso_(-1)
+    L1TGMTInternalMuon(const L1TRegionalMuonCandidate& other) : L1TRegionalMuonCandidate(other), type_(MicroGMTConfiguration::muon_t::UNSET), hwRank_(-1), hwCancelBit_(-1), hwIsoSum_(0), hwDeltaEta_(0), hwDeltaPhi_(0), hwAbsIso_(-1), hwRelIso_(-1)
     {};
 
     virtual ~L1TGMTInternalMuon() {};
