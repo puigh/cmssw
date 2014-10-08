@@ -5,11 +5,11 @@ namespace l1t {
 class L1TRegionalMuonCandidate {
   public:
     L1TRegionalMuonCandidate() : 
-      hwPt_(-1), hwPhi_(-1), hwEta_(-1), hwSignBit(-1), hwSignValid_(-1), hwQuality_(-1), hwTrackAddress_(-1)
+      hwPt_(0), hwPhi_(0), hwEta_(0), hwSignBit(0), hwSignValid_(0), hwQuality_(0), hwTrackAddress_(0)
       {};
 
     L1TRegionalMuonCandidate(int pt, int phi, int eta, int sign, int signvalid, int quality) : 
-      hwPt_(pt), hwPhi_(phi), hwEta_(eta), hwSignBit(sign), hwSignValid_(signvalid), hwQuality_(quality), hwTrackAddress_(-1)
+      hwPt_(pt), hwPhi_(phi), hwEta_(eta), hwSignBit(sign), hwSignValid_(signvalid), hwQuality_(quality), hwTrackAddress_(0)
       {};
 
     virtual ~L1TRegionalMuonCandidate() {};

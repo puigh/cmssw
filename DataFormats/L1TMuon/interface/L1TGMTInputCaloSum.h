@@ -7,7 +7,7 @@ namespace l1t {
   class L1TGMTInputCaloSum {
     public:
       L1TGMTInputCaloSum() : 
-        m_etBits(-1), m_hwPhi(-1), m_hwEta(-1), m_index(-1) {};
+        m_etBits(0), m_hwPhi(0), m_hwEta(0), m_index(0) {};
 
       L1TGMTInputCaloSum(int pt, int phi, int eta, int index) : 
         m_etBits(pt), m_hwPhi(phi), m_hwEta(eta), m_index(index) {};

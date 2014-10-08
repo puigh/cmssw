@@ -14,9 +14,20 @@
 #include "DataFormats/L1DTTrackFinder/interface/L1MuDTTrackContainer.h"
 #include "DataFormats/L1GlobalMuonTrigger/interface/L1MuRegionalCand.h"
 
+#include "DataFormats/L1TMuon/interface/L1TGMTInputCaloSumFwd.h"
+#include "DataFormats/L1TMuon/interface/L1TGMTInputCaloSum.h"
+#include "DataFormats/L1TMuon/interface/L1TRegionalMuonCandidateFwd.h"
+#include "DataFormats/L1TMuon/interface/L1TRegionalMuonCandidate.h"
+
 namespace {
   using namespace L1TMuon;
   struct dictionary {
+    l1t::L1TGMTInputCaloSumCollection caloSum;
+    edm::Wrapper<l1t::L1TGMTInputCaloSumCollection> caloSumWrap;
+
+    l1t::L1TRegionalMuonCandidateCollection regCand;
+    edm::Wrapper<l1t::L1TRegionalMuonCandidateCollection> regCandWrap;
+
     // trigger primitive information
     TriggerPrimitive::RPCData rpcD;
     TriggerPrimitive::CSCData cscD;

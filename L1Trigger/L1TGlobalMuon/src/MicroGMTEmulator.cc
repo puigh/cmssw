@@ -68,7 +68,7 @@ namespace l1t {
         void splitAndConvertMuons(MicroGMTConfiguration::InputCollection const& in, MicroGMTConfiguration::InterMuonList& out_pos, MicroGMTConfiguration::InterMuonList& out_neg,
           MicroGMTConfiguration::muon_t type_pos, MicroGMTConfiguration::muon_t type_neg) const;
         void convertMuons(MicroGMTConfiguration::InputCollection const& in, MicroGMTConfiguration::InterMuonList& out, MicroGMTConfiguration::muon_t type) const;
-        void addMuonsToCollections(MicroGMTConfiguration::InterMuonList const& coll, MicroGMTConfiguration::InterMuonList& interout, std::auto_ptr<std::vector<Muon> >& out) const;
+        void addMuonsToCollections(MicroGMTConfiguration::InterMuonList const& coll, MicroGMTConfiguration::InterMuonList& interout, std::auto_ptr<MuonBxCollection>& out) const;
         // ----------member data ---------------------------
         edm::InputTag m_barrelTfInputTag;
         edm::InputTag m_overlapTfInputTag;
@@ -102,8 +102,8 @@ l1t::MicroGMTEmulator::MicroGMTEmulator(const edm::ParameterSet& iConfig) : m_ra
   // m_overlapTfInputToken = consumes<InputCollection>(overlapTfInputTag);
   // m_forwardTfInputToken = consumes<InputCollection>(forwardTfInputTag);
    //register your products
-  produces<std::vector<Muon> >();
-  produces<std::vector<Muon> >("intermediateMuons");
+  produces<MuonBxCollection>();
+  produces<MuonBxCollection>("intermediateMuons");
 
   m_barrelTfInputTag = iConfig.getParameter<edm::InputTag>("barrelTFInput");
   m_overlapTfInputTag = iConfig.getParameter<edm::InputTag>("overlapTFInput");
@@ -132,8 +132,8 @@ void
 l1t::MicroGMTEmulator::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
   using namespace edm;
-  std::auto_ptr<std::vector<Muon> > outMuons (new std::vector<Muon>());
-  std::auto_ptr<std::vector<Muon> > intermediateMuons (new std::vector<Muon>());
+  std::auto_ptr<MuonBxCollection> outMuons (new MuonBxCollection());
+  std::auto_ptr<MuonBxCollection> intermediateMuons (new MuonBxCollection());
 
   Handle<MicroGMTConfiguration::InputCollection> barrelMuons;
   Handle<MicroGMTConfiguration::InputCollection> forwardMuons;
@@ -146,6 +146,7 @@ l1t::MicroGMTEmulator::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
   iEvent.getByLabel(m_overlapTfInputTag, overlapMuons);
   iEvent.getByLabel(m_trigTowerTag, trigTowers);
   
+  std::cout << "inputs: barrel:" << barrelMuons->size() << " fwd: " << forwardMuons->size() << " ovl: " << overlapMuons->size() << std::endl;
 
   m_isolationUnit.calculate5by1Sums(*trigTowers);
   MicroGMTConfiguration::InterMuonList internalMuonsBarrel;
@@ -156,7 +157,7 @@ l1t::MicroGMTEmulator::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
 
   convertMuons(*barrelMuons, internalMuonsBarrel, MicroGMTConfiguration::muon_t::BARRELTF);
   splitAndConvertMuons(*forwardMuons, internalMuonsEndcapPos, internalMuonsEndcapNeg, MicroGMTConfiguration::muon_t::FORWARDTF_POS, MicroGMTConfiguration::muon_t::FORWARDTF_NEG);
-  splitAndConvertMuons(*overlapMuons, internalMuonsEndcapPos, internalMuonsEndcapNeg, MicroGMTConfiguration::muon_t::OVERLAPTF_POS, MicroGMTConfiguration::muon_t::OVERLAPTF_NEG);
+  splitAndConvertMuons(*overlapMuons, internalMuonsOverlapPos, internalMuonsOverlapNeg, MicroGMTConfiguration::muon_t::OVERLAPTF_POS, MicroGMTConfiguration::muon_t::OVERLAPTF_NEG);
 
   m_isolationUnit.extrapolateMuons(internalMuonsBarrel);
   m_isolationUnit.extrapolateMuons(internalMuonsEndcapNeg);
@@ -176,13 +177,16 @@ l1t::MicroGMTEmulator::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
   sortMuons(internalMuonsEndcapPos, 4);
   sortMuons(internalMuonsEndcapNeg, 4);
 
+  std::cout << "inputs: barrel:" << internalMuonsBarrel.size() << " fwd+: " << internalMuonsEndcapPos.size() << " fwd-: " << internalMuonsEndcapNeg.size()  << " ovl+: " << internalMuonsOverlapPos.size() << " ovl-: " << internalMuonsOverlapNeg.size() << std::endl;
+
+
   MicroGMTConfiguration::InterMuonList internalMuons;
   addMuonsToCollections(internalMuonsBarrel, internalMuons, intermediateMuons);
   addMuonsToCollections(internalMuonsOverlapPos, internalMuons, intermediateMuons);
   addMuonsToCollections(internalMuonsOverlapNeg, internalMuons, intermediateMuons);
   addMuonsToCollections(internalMuonsEndcapNeg, internalMuons, intermediateMuons);
-  addMuonsToCollections(internalMuonsEndcapNeg, internalMuons, intermediateMuons);
-
+  addMuonsToCollections(internalMuonsEndcapPos, internalMuons, intermediateMuons);
+  std::cout << "first sort:" << internalMuons.size() << std::endl;
   // OutputCollection sort1Candidates;
   // rank muons only does push_back
   sortMuons(internalMuons, 8);
@@ -190,14 +194,20 @@ l1t::MicroGMTEmulator::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
   m_isolationUnit.isolate(internalMuons);
 
   // sort out-muons by n(wins)...
+  for (int nwins = 23; nwins >= 16; --nwins) {
     for (auto mu = internalMuons.begin(); mu != internalMuons.end(); ++mu) {
-      ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> > vec{};
-      int iso = mu->hwAbsIso()+(mu->hwRelIso()>>1);
-      Muon outMu{vec, mu->hwPt(), mu->hwEta(), mu->hwPhi(), mu->hwQual(), mu->hwSign(), mu->hwSignValid(), iso, 0, true, mu->hwIsoSum(), mu->hwDPhi(), mu->hwDEta(), mu->hwRank()};
-      outMuons->push_back(outMu);
+      if (mu->hwWins() == nwins && mu->hwPt() > 0) {
+        std::cout << mu->hwPt() << std::endl;
+        std::cout << mu->hwWins() << std::endl;
+        ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> > vec{};
+        int iso = mu->hwAbsIso()+(mu->hwRelIso()>>1);
+        Muon outMu{vec, mu->hwPt(), mu->hwEta(), mu->hwPhi(), mu->hwQual(), mu->hwSign(), mu->hwSignValid(), iso, 0, true, mu->hwIsoSum(), mu->hwDPhi(), mu->hwDEta(), mu->hwRank()};
+        outMuons->push_back(0, outMu);
+      }
     }
+  }
   
-
+  std::cout << "second sort:" << outMuons->size(0) << std::endl;
   iEvent.put(outMuons);
   iEvent.put(intermediateMuons, "intermediateMuons");
 }
@@ -245,12 +255,12 @@ l1t::MicroGMTEmulator::calculateRank(MicroGMTConfiguration::InterMuonList& muons
 
 
 void 
-l1t::MicroGMTEmulator::addMuonsToCollections(const MicroGMTConfiguration::InterMuonList& coll, MicroGMTConfiguration::InterMuonList& interout, std::auto_ptr<std::vector<Muon> >& out) const {
+l1t::MicroGMTEmulator::addMuonsToCollections(const MicroGMTConfiguration::InterMuonList& coll, MicroGMTConfiguration::InterMuonList& interout, std::auto_ptr<MuonBxCollection>& out) const {
  for (auto mu = coll.cbegin(); mu != coll.cend(); ++mu) {
     interout.push_back(*mu);
     ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> > vec{};
     Muon outMu{vec, mu->hwPt(), mu->hwEta(), mu->hwPhi(), mu->hwQual(), mu->hwSign(), mu->hwSignValid(), -1, 0, true, -1, mu->hwDPhi(), mu->hwDEta(), mu->hwRank()};
-    out->push_back(outMu);
+    out->push_back(0, outMu);
   } 
 }
 
@@ -266,6 +276,14 @@ l1t::MicroGMTEmulator::splitAndConvertMuons(const MicroGMTConfiguration::InputCo
       out_neg.back().setType(type_neg);
     }
   }
+  while(out_pos.size() < 16) {
+    out_pos.emplace_back();
+    out_pos.back().setType(type_pos);
+  }
+  while(out_neg.size() < 16) {
+    out_neg.emplace_back();
+    out_neg.back().setType(type_neg);
+  }
 }
         
 void 
@@ -273,6 +291,10 @@ l1t::MicroGMTEmulator::convertMuons(const MicroGMTConfiguration::InputCollection
 {
   for (auto mu = in.cbegin(); mu != in.cend(); ++mu) {
     out.emplace_back(*mu);
+    out.back().setType(type);
+  }
+  while(out.size() < 32) {
+    out.emplace_back();
     out.back().setType(type);
   }
 }

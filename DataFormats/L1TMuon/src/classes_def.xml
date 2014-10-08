@@ -20,6 +20,13 @@
   <class name="L1TMuon::TriggerPrimitiveList"/>
   <class name="L1TMuon::TriggerPrimitiveStationMap"/>
 
+  <class name="l1t::L1TRegionalMuonCandidate"/>
+  <class name="l1t::L1TRegionalMuonCandidateCollection"/>
+  <class name="edm::Wrapper<l1t::L1TRegionalMuonCandidateCollection>"/>
+  <class name="l1t::L1TGMTInputCaloSum"/>
+  <class name="l1t::L1TGMTInputCaloSumCollection"/>
+  <class name="edm::Wrapper<l1t::L1TGMTInputCaloSumCollection>"/>
+  
   <class name="L1TMuon::InternalTrack" ClassVersion="13">
    <version ClassVersion="13" checksum="4037012963"/>
   </class>

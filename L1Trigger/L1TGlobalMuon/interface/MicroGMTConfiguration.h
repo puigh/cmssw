@@ -26,7 +26,7 @@ namespace l1t {
       };
       typedef std::pair<input_t, int> PortType; 
       typedef L1TRegionalMuonCandidateCollection InputCollection;
-      typedef std::list<Muon> OutputCollection;
+      typedef MuonBxCollection OutputCollection;
       typedef Muon OutMuon;
       typedef L1TGMTInternalMuon InterMuon;
       typedef L1TGMTInternalMuonCollection InterMuonCollection;

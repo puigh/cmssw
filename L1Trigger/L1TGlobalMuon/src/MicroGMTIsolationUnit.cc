@@ -86,7 +86,7 @@ int
 l1t::MicroGMTIsolationUnit::calculate5by5Sum(unsigned index) const
 {
   if (index > m_5by1TowerSums.size()) {
-      edm::LogWarning("energysum out of bounds!");
+    edm::LogWarning("energysum out of bounds!");
     return 0;
   }
   // phi wrap around:
@@ -100,7 +100,7 @@ l1t::MicroGMTIsolationUnit::calculate5by5Sum(unsigned index) const
       edm::LogWarning("energysum out of bounds!");
     }
   } 
-  return returnSum;
+  return std::min(31, returnSum);
 }
 
 void 
