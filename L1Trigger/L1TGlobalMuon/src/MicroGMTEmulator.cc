@@ -32,9 +32,11 @@
 
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 
+#include "L1Trigger/L1TGlobalMuon/interface/MicroGMTConfiguration.h"
 #include "L1Trigger/L1TGlobalMuon/interface/MicroGMTRankPtQualLUT.h"
 #include "L1Trigger/L1TGlobalMuon/interface/MicroGMTIsolationUnit.h"
 #include "L1Trigger/L1TGlobalMuon/interface/MicroGMTCancelOutUnit.h"
+
 #include "DataFormats/Math/interface/LorentzVector.h"
 #include "DataFormats/L1Trigger/interface/Muon.h"
 #include "DataFormats/L1TMuon/interface/L1TRegionalMuonCandidate.h"
@@ -62,13 +64,14 @@ namespace l1t {
         virtual void beginLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&);
         virtual void endLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&);
 
+        static bool compareMuons(const MicroGMTConfiguration::InterMuon&, const MicroGMTConfiguration::InterMuon&);
 
         void sortMuons(MicroGMTConfiguration::InterMuonList&, unsigned) const;
         void calculateRank(MicroGMTConfiguration::InterMuonList& muons) const;
         void splitAndConvertMuons(MicroGMTConfiguration::InputCollection const& in, MicroGMTConfiguration::InterMuonList& out_pos, MicroGMTConfiguration::InterMuonList& out_neg,
           MicroGMTConfiguration::muon_t type_pos, MicroGMTConfiguration::muon_t type_neg) const;
         void convertMuons(MicroGMTConfiguration::InputCollection const& in, MicroGMTConfiguration::InterMuonList& out, MicroGMTConfiguration::muon_t type) const;
-        void addMuonsToCollections(MicroGMTConfiguration::InterMuonList const& coll, MicroGMTConfiguration::InterMuonList& interout, std::auto_ptr<MuonBxCollection>& out) const;
+        void addMuonsToCollections(MicroGMTConfiguration::InterMuonList& coll, MicroGMTConfiguration::InterMuonList& interout, std::auto_ptr<MuonBxCollection>& out) const;
         // ----------member data ---------------------------
         edm::InputTag m_barrelTfInputTag;
         edm::InputTag m_overlapTfInputTag;
@@ -181,37 +184,40 @@ l1t::MicroGMTEmulator::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
 
 
   MicroGMTConfiguration::InterMuonList internalMuons;
-  addMuonsToCollections(internalMuonsBarrel, internalMuons, intermediateMuons);
+  addMuonsToCollections(internalMuonsEndcapPos, internalMuons, intermediateMuons);
   addMuonsToCollections(internalMuonsOverlapPos, internalMuons, intermediateMuons);
+  addMuonsToCollections(internalMuonsBarrel, internalMuons, intermediateMuons);
   addMuonsToCollections(internalMuonsOverlapNeg, internalMuons, intermediateMuons);
   addMuonsToCollections(internalMuonsEndcapNeg, internalMuons, intermediateMuons);
-  addMuonsToCollections(internalMuonsEndcapPos, internalMuons, intermediateMuons);
   std::cout << "first sort:" << internalMuons.size() << std::endl;
   // OutputCollection sort1Candidates;
   // rank muons only does push_back
   sortMuons(internalMuons, 8);
 
   m_isolationUnit.isolate(internalMuons);
-
+  std::cout << "result second sort nmu = " << internalMuons.size() << std::endl;
   // sort out-muons by n(wins)...
   for (int nwins = 23; nwins >= 16; --nwins) {
     for (auto mu = internalMuons.begin(); mu != internalMuons.end(); ++mu) {
       if (mu->hwWins() == nwins && mu->hwPt() > 0) {
-        std::cout << mu->hwPt() << std::endl;
-        std::cout << mu->hwWins() << std::endl;
         ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> > vec{};
-        int iso = mu->hwAbsIso()+(mu->hwRelIso()>>1);
+        int iso = mu->hwAbsIso() + (mu->hwRelIso() << 1);
         Muon outMu{vec, mu->hwPt(), mu->hwEta(), mu->hwPhi(), mu->hwQual(), mu->hwSign(), mu->hwSignValid(), iso, 0, true, mu->hwIsoSum(), mu->hwDPhi(), mu->hwDEta(), mu->hwRank()};
         outMuons->push_back(0, outMu);
       }
     }
   }
   
-  std::cout << "second sort:" << outMuons->size(0) << std::endl;
+  std::cout << "n(out) = " << outMuons->size(0) << std::endl;
   iEvent.put(outMuons);
   iEvent.put(intermediateMuons, "intermediateMuons");
 }
 
+
+bool 
+l1t::MicroGMTEmulator::compareMuons(const MicroGMTConfiguration::InterMuon& mu1, const MicroGMTConfiguration::InterMuon& mu2) {
+  return (mu1.hwWins() > mu2.hwWins());
+}
 
 void 
 l1t::MicroGMTEmulator::sortMuons(MicroGMTConfiguration::InterMuonList& muons, unsigned nSurvivors) const {
@@ -255,13 +261,14 @@ l1t::MicroGMTEmulator::calculateRank(MicroGMTConfiguration::InterMuonList& muons
 
 
 void 
-l1t::MicroGMTEmulator::addMuonsToCollections(const MicroGMTConfiguration::InterMuonList& coll, MicroGMTConfiguration::InterMuonList& interout, std::auto_ptr<MuonBxCollection>& out) const {
- for (auto mu = coll.cbegin(); mu != coll.cend(); ++mu) {
+l1t::MicroGMTEmulator::addMuonsToCollections(MicroGMTConfiguration::InterMuonList& coll, MicroGMTConfiguration::InterMuonList& interout, std::auto_ptr<MuonBxCollection>& out) const {
+  coll.sort(l1t::MicroGMTEmulator::compareMuons);
+  for (auto mu = coll.cbegin(); mu != coll.cend(); ++mu) { 
     interout.push_back(*mu);
     ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> > vec{};
     Muon outMu{vec, mu->hwPt(), mu->hwEta(), mu->hwPhi(), mu->hwQual(), mu->hwSign(), mu->hwSignValid(), -1, 0, true, -1, mu->hwDPhi(), mu->hwDEta(), mu->hwRank()};
     out->push_back(0, outMu);
-  } 
+  }
 }
 
 void
