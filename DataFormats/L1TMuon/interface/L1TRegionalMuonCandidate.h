@@ -21,6 +21,7 @@ class L1TRegionalMuonCandidate {
     void setHwSignValid(int bits) { hwSignValid_ = bits; };
     void setHwQual(int bits) { hwQuality_ = bits; };
     void setHwTrackAddress(int bits) { hwTrackAddress_ = bits; };
+    void setLink(int link) { link_ = link; };
 
     const int hwPt() const { return hwPt_; };
     const int hwPhi() const { return hwPhi_; };
@@ -29,7 +30,7 @@ class L1TRegionalMuonCandidate {
     const int hwSignValid() const { return hwSignValid_; };
     const int hwQual() const { return hwQuality_; };
     const int hwTrackAddress() const { return hwTrackAddress_; };
-
+    const int link() const { return link_; }
   private:
     int hwPt_;
     int hwPhi_;
@@ -38,6 +39,7 @@ class L1TRegionalMuonCandidate {
     int hwSignValid_;
     int hwQuality_;
     int hwTrackAddress_;
+    int link_;
 };
 
 }
