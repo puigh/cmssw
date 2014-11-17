@@ -17,7 +17,7 @@ void
 l1t::MicroGMTLUT::load(const std::string& inFileName) {
   std::ifstream fstream;
   fstream.open(inFileName.c_str());
-  if (!fstream.good()) throw cms::Exception("FileOpenError") << "Failed to open LUT file";
+  if (!fstream.good()) throw cms::Exception("FileOpenError") << "Failed to open LUT file: " << inFileName;
   
 
   std::string lineID = "";
@@ -58,6 +58,13 @@ l1t::MicroGMTLUT::initialize()
     m_contents[in] = out;
   }
   m_initialized = true;
+}
+
+int 
+l1t::MicroGMTLUT::checkedInput(unsigned in, unsigned maxWidth) const 
+{
+  unsigned maxIn = (1 << maxWidth) - 1;
+  return (in < maxIn ? in : maxIn);
 }
 
 void 

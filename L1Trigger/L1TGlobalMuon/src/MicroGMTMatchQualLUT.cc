@@ -29,7 +29,7 @@ l1t::MicroGMTMatchQualLUT::lookup(int dEtaRed, int dPhiRed) const
 {
   // normalize these two to the same scale and then calculate?
   if (m_initialized) {
-    return lookupPacked(hashInput(dEtaRed, dPhiRed));
+    return lookupPacked(hashInput(checkedInput(dEtaRed, m_dEtaRedInWidth), checkedInput(dPhiRed, m_dPhiRedInWidth)));
   }
 
   return -1; 

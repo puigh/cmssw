@@ -37,5 +37,5 @@ l1t::MicroGMTCaloIndexSelectionLUT::~MicroGMTCaloIndexSelectionLUT ()
 int 
 l1t::MicroGMTCaloIndexSelectionLUT::lookup(int angle) const 
 {
-  return lookupPacked(angle);
+  return lookupPacked(checkedInput(angle, m_angleInWidth));
 }

@@ -22,6 +22,8 @@ namespace l1t {
       // populates the m_contents map.
       void initialize();
 
+      int checkedInput(unsigned in, unsigned maxWidth) const;
+
       // I/O functions
       void save(std::ofstream& output);
       void load(const std::string& inFileName);
@@ -30,8 +32,8 @@ namespace l1t {
       void headerToStream(std::stringstream& stream) const;
 
     protected:
-      size_t m_totalInWidth;
-      size_t m_outWidth;
+      unsigned m_totalInWidth;
+      unsigned m_outWidth;
       std::vector<MicroGMTConfiguration::input_t> m_inputs;
       std::map<int, int> m_contents;
       std::string m_fname;

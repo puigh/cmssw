@@ -37,5 +37,5 @@ l1t::MicroGMTAbsoluteIsolationCheckLUT::~MicroGMTAbsoluteIsolationCheckLUT ()
 int 
 l1t::MicroGMTAbsoluteIsolationCheckLUT::lookup(int energySum) const 
 {
-  return lookupPacked(energySum);
+  return lookupPacked(checkedInput(energySum, m_energySumInWidth));
 }

@@ -39,7 +39,7 @@ int
 l1t::MicroGMTRelativeIsolationCheckLUT::lookup(int energySum, int pt) const 
 {
   // normalize these two to the same scale and then calculate?
-  return lookupPacked(hashInput(energySum, pt));
+  return lookupPacked(hashInput(checkedInput(energySum, m_energySumInWidth), checkedInput(pt, m_ptInWidth)));
 }
 
 int 

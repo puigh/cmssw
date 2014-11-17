@@ -46,7 +46,7 @@ l1t::MicroGMTExtrapolationLUT::lookup(int charge, int angle, int pt) const
   // normalize these two to the same scale and then calculate?
   if (m_initialized) {
     unsigned myAngle = MicroGMTConfiguration::getTwosComp(angle, m_angleInWidth);
-    return lookupPacked(hashInput(charge, myAngle, pt));
+    return lookupPacked(hashInput(checkedInput(charge, m_chrgInWidth), checkedInput(myAngle, m_angleInWidth), checkedInput(pt, m_ptRedInWidth)));
   }
   int result = 0;
   // normalize to out width

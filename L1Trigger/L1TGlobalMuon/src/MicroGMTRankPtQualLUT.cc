@@ -17,6 +17,14 @@ l1t::MicroGMTRankPtQualLUT::MicroGMTRankPtQualLUT (const edm::ParameterSet& iCon
   } 
 }
 
+l1t::MicroGMTRankPtQualLUT::MicroGMTRankPtQualLUT () : MicroGMTLUT(), m_ptMask(0), m_qualMask(0), m_ptInWidth(9), m_qualInWidth(4)
+{
+  m_ptMask = (1 << m_ptInWidth) - 1;
+  m_qualMask = (1 << (m_totalInWidth - 1)) - m_ptMask - 1;
+  m_outWidth = 10;
+  m_totalInWidth = m_ptInWidth + m_qualInWidth;
+} 
+
 l1t::MicroGMTRankPtQualLUT::~MicroGMTRankPtQualLUT ()
 {
 
@@ -27,11 +35,11 @@ l1t::MicroGMTRankPtQualLUT::lookup(int pt, int qual) const
 {
   // normalize these two to the same scale and then calculate?
   if (m_initialized) {
-    return lookupPacked(hashInput(pt, qual));
+    return lookupPacked(hashInput(checkedInput(pt, m_ptInWidth), checkedInput(qual, m_qualInWidth)));
   }
 
   int result = 0;
-  result = pt + qual*2; 
+  result = pt + qual; 
   // normalize to out width
   return result;  
 }
