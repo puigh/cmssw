@@ -11,7 +11,7 @@
 namespace l1t {
   class MicroGMTRankPtQualLUT : public MicroGMTLUT {
     public:
-      MicroGMTRankPtQualLUT () : m_ptMask(0), m_qualMask(0), m_ptInWidth(-1), m_qualInWidth(-1) {};
+      MicroGMTRankPtQualLUT ();
       explicit MicroGMTRankPtQualLUT (const edm::ParameterSet&);
       virtual ~MicroGMTRankPtQualLUT ();
 
