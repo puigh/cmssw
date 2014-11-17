@@ -2,7 +2,6 @@
 <use name="FWCore/PluginManager"/>
 <use name="FWCore/ParameterSet"/>
 <use name="DataFormats/L1Trigger"/>
-<flags EDM_PLUGIN="1"/>
 <export>
-   <lib name="MicroGMTEmulator"/>
+  <lib name="1"/>
 </export>
