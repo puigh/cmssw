@@ -387,6 +387,18 @@ L1TGlobalProducer::L1TGlobalProducer(const edm::ParameterSet& parSet) :
     m_initialTriggerMaskAlgoTrig = temp_triggerMask;
     m_initialTriggerMaskVetoAlgoTrig = temp_triggerVetoMask;
 
+
+    // Set initial, dummy values for algoBxMask for testing
+    std::map<int, std::vector<int> > temp_triggerAlgoBxMask;
+    // Relevant for MC testing
+    std::vector<int> maskedBitsAlgoBx;
+    maskedBitsAlgoBx.push_back(71);
+    maskedBitsAlgoBx.push_back(73);
+    maskedBitsAlgoBx.push_back(77);
+
+    temp_triggerAlgoBxMask[-1] = maskedBitsAlgoBx;
+    
+    m_initialTriggerAlgoBxMask = temp_triggerAlgoBxMask;
 }
 
 // destructor
@@ -564,7 +576,7 @@ void L1TGlobalProducer::produce(edm::Event& iEvent, const edm::EventSetup& evSet
     m_prescaleFactorsAlgoTrig = &m_initialPrescaleFactorsAlgoTrig;
     m_triggerMaskAlgoTrig = &m_initialTriggerMaskAlgoTrig;
     m_triggerMaskVetoAlgoTrig = &m_initialTriggerMaskVetoAlgoTrig;
-
+    m_triggerAlgoBxMask = &m_initialTriggerAlgoBxMask;
 
     // get / update the trigger mask from the EventSetup
     // local cache & check on cacheIdentifier
@@ -704,6 +716,7 @@ void L1TGlobalProducer::produce(edm::Event& iEvent, const edm::EventSetup& evSet
 
     const std::vector<unsigned int>& triggerMaskAlgoTrig = *m_triggerMaskAlgoTrig;
     const std::vector<unsigned int>& triggerMaskVetoAlgoTrig = *m_triggerMaskVetoAlgoTrig;
+    const std::map<int, std::vector<int> >& triggerAlgoBxMask = *m_triggerAlgoBxMask;
 
     LogDebug("L1TGlobalProducer") << "Size of prescale vector" << prescaleFactorsAlgoTrig.size() << std::endl;
 
@@ -761,6 +774,7 @@ void L1TGlobalProducer::produce(edm::Event& iEvent, const edm::EventSetup& evSet
 			  prescaleFactorsAlgoTrig,
 			  triggerMaskAlgoTrig,
 			  triggerMaskVetoAlgoTrig,
+			  triggerAlgoBxMask,
 		          m_algorithmTriggersUnprescaled,
 		          m_algorithmTriggersUnmasked
 		          );

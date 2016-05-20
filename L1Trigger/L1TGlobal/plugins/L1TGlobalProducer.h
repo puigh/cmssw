@@ -114,6 +114,9 @@ private:
     const std::vector<unsigned int>* m_triggerMaskVetoAlgoTrig;
     std::vector<unsigned int> m_initialTriggerMaskVetoAlgoTrig;
 
+    const std::map<int, std::vector<int> >* m_triggerAlgoBxMask;
+    std::map<int, std::vector<int> > m_initialTriggerAlgoBxMask;
+
 private:
 
     l1t::GlobalBoard* m_uGtBrd;

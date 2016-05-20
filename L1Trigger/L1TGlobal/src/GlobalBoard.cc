@@ -788,6 +788,7 @@ void l1t::GlobalBoard::runFDL(edm::Event& iEvent,
 	const std::vector<int>& prescaleFactorsAlgoTrig,
 	const std::vector<unsigned int>& triggerMaskAlgoTrig,
 	const std::vector<unsigned int>& triggerMaskVetoAlgoTrig,
+	const std::map<int, std::vector<int> >& triggerAlgoBxMask,
         const bool algorithmTriggersUnprescaled,
         const bool algorithmTriggersUnmasked ){
 
@@ -832,25 +833,33 @@ void l1t::GlobalBoard::runFDL(edm::Event& iEvent,
     // ----------------------------------------------------
     if( !algorithmTriggersUnmasked ){
 
-/*  TO DO get absBX masking
-      bool temp_algBxMaskOr = false;
-      for( unsigned int iBit = 0; iBit < numberPhysTriggers; ++iBit ){
-
-	bool bitValue = m_uGtAlgBlk.getAlgoDecisionInterm( iBit );
-
-	if( bitValue ){
-	  bool isMasked = ( triggerMaskAlgoTrig.at(iBit) == 0 );
-
-	  bool passMask = ( bitValue && !isMasked );
-
-	  if( passMask ) temp_algBxMaskOr = true;
-	  else           m_uGtAlgBlk.setAlgoDecisionFinal(iBit,false);
-
+      int abBx = iEvent.bunchCrossing();
+      std::map<int, std::vector<int> >::const_iterator it = triggerAlgoBxMask.find(abBx);
+      if( it != triggerAlgoBxMask.end() ){
+	
+	std::vector<int> triggerAlgoBxMask = it->second;
+	for( unsigned int iBit = 0; iBit < triggerAlgoBxMask.size(); iBit++ ){
+	  int algoBit = triggerAlgoBxMask[iBit];
+	  m_uGtAlgBlk.setAlgoDecisionInterm(algoBit,false);
 	}
-      }
 
-      m_algIntermOr = temp_algBxMaskOr; */
-      m_algIntermOr = m_algInitialOr;
+	bool temp_algBxMaskOr = false;
+	for( unsigned int iBit = 0; iBit < numberPhysTriggers; ++iBit ){
+	  bool bitValue = m_uGtAlgBlk.getAlgoDecisionInterm( iBit );
+	  if( bitValue ){
+	    temp_algBxMaskOr = true;
+	    break;
+	  }
+	}
+	
+	m_algIntermOr = temp_algBxMaskOr;
+
+      }
+      else {
+
+	m_algIntermOr = m_algInitialOr;
+
+      }
 	
     } 
     else {

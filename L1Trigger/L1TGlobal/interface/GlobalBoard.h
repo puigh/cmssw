@@ -106,6 +106,7 @@ public:
         const std::vector<int>& prescaleFactorsAlgoTrig,
 	const std::vector<unsigned int>& triggerMaskAlgoTrig,
 	const std::vector<unsigned int>& triggerMaskVetoAlgoTrig,
+	const std::map<int, std::vector<int> >& triggerAlgoBxMask,
         const bool algorithmTriggersUnprescaled,
         const bool algorithmTriggersUnmasked );
 
