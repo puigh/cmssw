@@ -184,6 +184,9 @@ const bool l1t::MuCondition::evaluateCondition(const int bxEval) const {
     // clear the m_combinationsInCond vector
     combinationsInCond().clear();
 
+    // Transform index for BX = 0 to begin of BxVector
+    unsigned int shiftIndex = candVec->begin(useBx) - candVec->begin();
+
     do {
 
         if (--jumpIndex)
@@ -207,7 +210,8 @@ const bool l1t::MuCondition::evaluateCondition(const int bxEval) const {
 	      LogDebug("L1TGlobal") << "===> MuCondition::evaluateCondition, CONGRATS!! This muon passed the condition." << std::endl;
 	    else 
 	      LogDebug("L1TGlobal") << "===> MuCondition::evaluateCondition, FAIL!! This muon failed the condition." << std::endl;
-            objectsInComb.push_back(index[i]);
+            //objectsInComb.push_back(shiftIndex + index[i]);
+            objectsInComb.push_back(shiftIndex + index[i]);
 
         }
 

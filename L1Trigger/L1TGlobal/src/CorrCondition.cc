@@ -408,10 +408,11 @@ const bool l1t::CorrCondition::evaluateCondition(const int bxEval) const {
             case CondMuon: {
 	        lutObj0 = "MU";
                 candMuVec = m_uGtB->getCandL1Mu();
-                phiIndex0 =  (candMuVec->at(bxEval,obj0Index))->hwPhi(); //(*candMuVec)[obj0Index]->phiIndex();
-                etaIndex0 =  (candMuVec->at(bxEval,obj0Index))->hwEta();
-		etIndex0  =  (candMuVec->at(bxEval,obj0Index))->hwPt();
-		chrg0     =  (candMuVec->at(bxEval,obj0Index))->hwCharge();
+		int shiftIndex = -(candMuVec->begin(bxEval) - candMuVec->begin());
+                phiIndex0 =  (candMuVec->at(bxEval,obj0Index + shiftIndex))->hwPhi(); //(*candMuVec)[obj0Index]->phiIndex();
+                etaIndex0 =  (candMuVec->at(bxEval,obj0Index + shiftIndex))->hwEta();
+		etIndex0  =  (candMuVec->at(bxEval,obj0Index + shiftIndex))->hwPt();
+		chrg0     =  (candMuVec->at(bxEval,obj0Index + shiftIndex))->hwCharge();
 		int etaBin0 = etaIndex0;
 		if(etaBin0<0) etaBin0 = m_gtScales->getMUScales().etaBins.size() + etaBin0; //twos complement		
 //		LogDebug("L1TGlobal") << "Muon phi" << phiIndex0 << " eta " << etaIndex0 << " etaBin0 = " << etaBin0  << " et " << etIndex0 << std::endl;
@@ -442,9 +443,10 @@ const bool l1t::CorrCondition::evaluateCondition(const int bxEval) const {
 	         case gtEG: {
 		    lutObj0 = "EG";
 		    candCaloVec = m_uGtB->getCandL1EG();
-		    phiIndex0 =  (candCaloVec->at(bxEval,obj0Index))->hwPhi();
-		    etaIndex0 =  (candCaloVec->at(bxEval,obj0Index))->hwEta();
-		    etIndex0  =  (candCaloVec->at(bxEval,obj0Index))->hwPt();
+		    int shiftIndex = -(candCaloVec->begin(bxEval) - candCaloVec->begin());
+		    phiIndex0 =  (candCaloVec->at(bxEval,obj0Index + shiftIndex))->hwPhi();
+		    etaIndex0 =  (candCaloVec->at(bxEval,obj0Index + shiftIndex))->hwEta();
+		    etIndex0  =  (candCaloVec->at(bxEval,obj0Index + shiftIndex))->hwPt();
 		    etaBin0   = etaIndex0;
 		    if(etaBin0<0) etaBin0 = m_gtScales->getEGScales().etaBins.size() + etaBin0;
 //		    LogDebug("L1TGlobal") << "EG0 phi" << phiIndex0 << " eta " << etaIndex0 << " etaBin0 = " << etaBin0 << " et " << etIndex0 << std::endl;
@@ -469,9 +471,10 @@ const bool l1t::CorrCondition::evaluateCondition(const int bxEval) const {
 		 case gtJet: {
 		    lutObj0 = "JET";
 		    candCaloVec = m_uGtB->getCandL1Jet();
-		    phiIndex0 =  (candCaloVec->at(bxEval,obj0Index))->hwPhi();
-		    etaIndex0 =  (candCaloVec->at(bxEval,obj0Index))->hwEta();
-		    etIndex0  =  (candCaloVec->at(bxEval,obj0Index))->hwPt();
+		    int shiftIndex = -(candCaloVec->begin(bxEval) - candCaloVec->begin());
+		    phiIndex0 =  (candCaloVec->at(bxEval,obj0Index + shiftIndex))->hwPhi();
+		    etaIndex0 =  (candCaloVec->at(bxEval,obj0Index + shiftIndex))->hwEta();
+		    etIndex0  =  (candCaloVec->at(bxEval,obj0Index + shiftIndex))->hwPt();
 		    etaBin0 = etaIndex0;
 		    if(etaBin0<0) etaBin0 = m_gtScales->getJETScales().etaBins.size() + etaBin0;
 
@@ -494,9 +497,10 @@ const bool l1t::CorrCondition::evaluateCondition(const int bxEval) const {
 		   break;
 		 case gtTau: {
 		    candCaloVec = m_uGtB->getCandL1Tau();
-		    phiIndex0 =  (candCaloVec->at(bxEval,obj0Index))->hwPhi();
-		    etaIndex0 =  (candCaloVec->at(bxEval,obj0Index))->hwEta();
-		    etIndex0  =  (candCaloVec->at(bxEval,obj0Index))->hwPt();
+		    int shiftIndex = -(candCaloVec->begin(bxEval) - candCaloVec->begin());
+		    phiIndex0 =  (candCaloVec->at(bxEval,obj0Index + shiftIndex))->hwPhi();
+		    etaIndex0 =  (candCaloVec->at(bxEval,obj0Index + shiftIndex))->hwEta();
+		    etIndex0  =  (candCaloVec->at(bxEval,obj0Index + shiftIndex))->hwPt();
 		    etaBin0 = etaIndex0;
 		    if(etaBin0<0) etaBin0 = m_gtScales->getTAUScales().etaBins.size() + etaBin0;
 
@@ -692,10 +696,11 @@ const bool l1t::CorrCondition::evaluateCondition(const int bxEval) const {
                 case CondMuon: {
 		   lutObj1 = "MU"; 
                    candMuVec = m_uGtB->getCandL1Mu();
-                   phiIndex1 =  (candMuVec->at(bxEval,obj1Index))->hwPhi(); //(*candMuVec)[obj0Index]->phiIndex();
-                   etaIndex1 =  (candMuVec->at(bxEval,obj1Index))->hwEta();
-		   etIndex1  =  (candMuVec->at(bxEval,obj1Index))->hwPt();
-		   chrg1     =  (candMuVec->at(bxEval,obj1Index))->hwCharge();
+		   int shiftIndex = -(candMuVec->begin(bxEval) - candMuVec->begin());
+                   phiIndex1 =  (candMuVec->at(bxEval,obj1Index + shiftIndex))->hwPhi(); //(*candMuVec)[obj0Index]->phiIndex();
+                   etaIndex1 =  (candMuVec->at(bxEval,obj1Index + shiftIndex))->hwEta();
+		   etIndex1  =  (candMuVec->at(bxEval,obj1Index + shiftIndex))->hwPt();
+		   chrg1     =  (candMuVec->at(bxEval,obj1Index + shiftIndex))->hwCharge();
 		   etaBin1 = etaIndex1;
 		   if(etaBin1<0) etaBin1 = m_gtScales->getMUScales().etaBins.size() + etaBin1;	   
 //		   LogDebug("L1TGlobal") << "Muon phi" << phiIndex1 << " eta " << etaIndex1 << " etaBin1 = " << etaBin1  << " et " << etIndex1 << std::endl;
@@ -721,9 +726,10 @@ const bool l1t::CorrCondition::evaluateCondition(const int bxEval) const {
         	   switch(cndObjTypeVec[1]) {
 	             case gtEG: {
 			candCaloVec = m_uGtB->getCandL1EG();
-			phiIndex1 =  (candCaloVec->at(bxEval,obj1Index))->hwPhi();
-			etaIndex1 =  (candCaloVec->at(bxEval,obj1Index))->hwEta();
-			etIndex1  =  (candCaloVec->at(bxEval,obj1Index))->hwPt();
+			int shiftIndex = -(candCaloVec->begin(bxEval) - candCaloVec->begin());
+			phiIndex1 =  (candCaloVec->at(bxEval,obj1Index + shiftIndex))->hwPhi();
+			etaIndex1 =  (candCaloVec->at(bxEval,obj1Index + shiftIndex))->hwEta();
+			etIndex1  =  (candCaloVec->at(bxEval,obj1Index + shiftIndex))->hwPt();
 			etaBin1   =   etaIndex1;
 			if(etaBin1<0) etaBin1 = m_gtScales->getEGScales().etaBins.size() + etaBin1;
 
@@ -746,9 +752,10 @@ const bool l1t::CorrCondition::evaluateCondition(const int bxEval) const {
 		       break;
 		     case gtJet: {
 			candCaloVec = m_uGtB->getCandL1Jet();
-			phiIndex1 =  (candCaloVec->at(bxEval,obj1Index))->hwPhi();
-			etaIndex1 =  (candCaloVec->at(bxEval,obj1Index))->hwEta();
-			etIndex1  =  (candCaloVec->at(bxEval,obj1Index))->hwPt();
+			int shiftIndex = -(candCaloVec->begin(bxEval) - candCaloVec->begin());
+			phiIndex1 =  (candCaloVec->at(bxEval,obj1Index + shiftIndex))->hwPhi();
+			etaIndex1 =  (candCaloVec->at(bxEval,obj1Index + shiftIndex))->hwEta();
+			etIndex1  =  (candCaloVec->at(bxEval,obj1Index + shiftIndex))->hwPt();
 			etaBin1 = etaIndex1;
 			if(etaBin1<0) etaBin1 = m_gtScales->getJETScales().etaBins.size() + etaBin1;
 						
@@ -773,9 +780,10 @@ const bool l1t::CorrCondition::evaluateCondition(const int bxEval) const {
 		       break;
 		     case gtTau: {
 			candCaloVec = m_uGtB->getCandL1Tau();
-			phiIndex1 =  (candCaloVec->at(bxEval,obj1Index))->hwPhi();
-			etaIndex1 =  (candCaloVec->at(bxEval,obj1Index))->hwEta();
-			etIndex1  =  (candCaloVec->at(bxEval,obj1Index))->hwPt();
+			int shiftIndex = -(candCaloVec->begin(bxEval) - candCaloVec->begin());
+			phiIndex1 =  (candCaloVec->at(bxEval,obj1Index + shiftIndex))->hwPhi();
+			etaIndex1 =  (candCaloVec->at(bxEval,obj1Index + shiftIndex))->hwEta();
+			etIndex1  =  (candCaloVec->at(bxEval,obj1Index + shiftIndex))->hwPt();
 			etaBin1 = etaIndex1;
 			if(etaBin1<0) etaBin1 = m_gtScales->getTAUScales().etaBins.size() + etaBin1;
 

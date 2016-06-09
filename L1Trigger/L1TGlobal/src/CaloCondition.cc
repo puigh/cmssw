@@ -220,6 +220,9 @@ const bool l1t::CaloCondition::evaluateCondition(const int bxEval) const {
     // clear the m_combinationsInCond vector
     combinationsInCond().clear();
 
+    // Transform index for BX = 0 to begin of BxVector
+    unsigned int shiftIndex = candVec->begin(useBx) - candVec->begin();
+
     ////// NEW Method
     if( nObjInCond==1 ){
 
@@ -234,7 +237,7 @@ const bool l1t::CaloCondition::evaluateCondition(const int bxEval) const {
 	totalLoops++;
 	bool passCondition = checkObjectParameter(0, *(candVec->at(useBx,i)));
 	if( passCondition ){
-	  objectsInComb.push_back(i);
+	  objectsInComb.push_back(shiftIndex + i);
 	  condResult = true;
 	  passLoops++;
 	  combinationsInCond().push_back(objectsInComb);
@@ -303,8 +306,8 @@ const bool l1t::CaloCondition::evaluateCondition(const int bxEval) const {
 
 
 	    objectsInComb.clear();
-	    objectsInComb.push_back(i);
-	    objectsInComb.push_back(j);
+	    objectsInComb.push_back(shiftIndex + i);
+	    objectsInComb.push_back(shiftIndex + j);
 	    condResult = true;
 	    passLoops++;
 	    combinationsInCond().push_back(objectsInComb);
@@ -352,9 +355,9 @@ const bool l1t::CaloCondition::evaluateCondition(const int bxEval) const {
 	      condResult = true;
 	      passLoops++;
 	      objectsInComb.clear();
-	      objectsInComb.push_back(i);
-	      objectsInComb.push_back(j);
-	      objectsInComb.push_back(k);
+	      objectsInComb.push_back(shiftIndex + i);
+	      objectsInComb.push_back(shiftIndex + j);
+	      objectsInComb.push_back(shiftIndex + k);
  	      combinationsInCond().push_back(objectsInComb);
 	    }
 	  }// end loop on k
@@ -430,10 +433,10 @@ const bool l1t::CaloCondition::evaluateCondition(const int bxEval) const {
 			   );
 	      if( pass ){
 		objectsInComb.clear();
-		objectsInComb.push_back(i);
-		objectsInComb.push_back(j);
-		objectsInComb.push_back(k);
-		objectsInComb.push_back(m);
+		objectsInComb.push_back(shiftIndex + i);
+		objectsInComb.push_back(shiftIndex + j);
+		objectsInComb.push_back(shiftIndex + k);
+		objectsInComb.push_back(shiftIndex + m);
 		condResult = true;
 		passLoops++;
 		combinationsInCond().push_back(objectsInComb);
